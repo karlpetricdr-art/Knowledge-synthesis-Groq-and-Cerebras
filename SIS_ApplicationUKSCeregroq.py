@@ -582,7 +582,7 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
 
             # --- STEP 2: SUPERIOR DUAL-ARCHITECTURE CONNECTION ---
             # Explicit separation of instructions for the Language Model
-            metamodel_instruction = f"MANDATORY IMA ARCHITECTURE INTEGRATION (IMA + SPECIAL ADD-ON): {json.dumps(HUMAN_THICKING_METAMODEL)}"
+            metamodel_instruction = f"MANDATORY IMA ARCHITECTURE INTEGRATION (IMA + SPECIAL ADD-ON): {json.dumps(HUMAN_THINKING_METAMODEL)}"
             mental_approaches_instruction = f"MANDATORY MENTAL APPROACHES DIAGRAM LOGIC (MA): {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}"
             
             idea_production_prompt = ""
@@ -612,7 +612,7 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
                 model_name = "llama-3.3-70b-versatile"
             else: # Cerebras implementation
                 client = OpenAI(api_key=api_key, base_url="https://api.cerebras.ai/v1")
-                # Corrected Cerebras Model Name to llama-3.3-70b
+                # Updated Cerebras Model Name
                 model_name = "llama-3.3-70b" 
             
             # SISTEMSKO NAVODILO (Full dissertation requirement)
@@ -725,5 +725,6 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
 st.divider()
 
 st.caption("SIS Universal Knowledge Synthesizer | v22.4 Separation Architecture Engine | Cerebras Integrated | 2026")
+
 
 
