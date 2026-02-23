@@ -612,10 +612,8 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
                 model_name = "llama-3.3-70b-versatile"
             else: # Cerebras implementation
                 client = OpenAI(api_key=api_key, base_url="https://api.cerebras.ai/v1")
-                # NEW FEB 2026 PRODUCTION MODELS:
-                # Use "gpt-oss-120b" for deep synthesis (Dissertations/Ideas)
-                # Use "llama3.1-8b" for high-speed simple tasks
-                model_name = "gpt-oss-120b" 
+                # Updated Cerebras 2026 Logic: Ensures JSON output for Cytoscape
+                model_name = "llama3.1-70b" 
             
             # SISTEMSKO NAVODILO (Full dissertation requirement)
             sys_prompt = f"""
@@ -693,6 +691,7 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
                 st.markdown(main_markdown, unsafe_allow_html=True)
 
                 # --- VIZUALIZACIJA (Interconnected Graph) ---
+                # This block works for both Groq and Cerebras outputs
                 if len(parts) > 1:
                     try:
                         g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
@@ -726,3 +725,4 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
 # PODNOŽJE (ZAHVALA IN VERZIJA)
 st.divider()
 st.caption("SIS Universal Knowledge Synthesizer | v22.4 Separation Architecture Engine | Cerebras Integrated | 2026")
+
