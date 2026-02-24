@@ -26,27 +26,31 @@ st.set_page_config(
 # Aggressively removes 'keyboard_double_arrow_right' and forces high-contrast Explorer readability.
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
-    
-    html, body, [class*="st-"] {
-        font-family: 'Inter', sans-serif;
-    }
-
-    /* --- SIDEBAR ARTIFACT & VISIBILITY FIXES --- */
-    [data-testid="stSidebar"] {
-        background-color: #f8f9fa !important;
-        border-right: 2px solid #e9ecef;
-        min-width: 360px !important;
-    }
-
-    /* Aggressive fix to obliterate keyboard_double_arrow_right and Streamlit artifacts */
-    [data-testid="stSidebar"] [data-testid="stIcon"],
-    [data-testid="stSidebar"] svg[class*="st-emotion-cache"],
-    [data-testid="stSidebar"] .st-emotion-cache-16idsys,
-    [data-testid="stSidebar"] span[data-testid="stExpanderIcon"] {
+  /* 1. OBLITERATE THE KEYBOARD ARROW ARTIFACT */
+    /* This hides the specific text and icon containers that glitch in the sidebar */
+    [data-testid="stSidebar"] [data-testid="stIcon"], 
+    [data-testid="stSidebar"] span[data-testid="stExpanderIcon"],
+    [data-testid="stSidebar"] .st-emotion-cache-16idsys {
         display: none !important;
         visibility: hidden !important;
         width: 0 !important;
+    }
+
+    /* 2. FIX KNOWLEDGE EXPLORER VISIBILITY */
+    /* This forces the text to be deep navy/black so it is no longer "badly visible" */
+    [data-testid="stSidebar"] .stMarkdown p, 
+    [data-testid="stSidebar"] .stMarkdown li,
+    [data-testid="stSidebar"] label {
+        color: #001219 !important; /* Deep high-contrast navy */
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        opacity: 1 !important;
+    }
+
+    /* 3. ENSURE EXPANDER HEADERS ARE READABLE */
+    .stExpander details summary p {
+        color: #1d3557 !important;
+        font-weight: 700 !important;
     }
     
     /* Forcing high-contrast text in Knowledge Explorer for perfect readability */
@@ -784,6 +788,7 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
 st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_ID} | Operating Date: {SYSTEM_DATE}")
 st.write("")
+
 
 
 
