@@ -670,6 +670,12 @@ KNOWLEDGE_BASE = {
             "tools": ["Crime Mapping", "AFIS", "CODIS", "SPSS"], 
             "facets": ["Penology", "Forensic Psychology", "Police Science", "Criminal Justice"]
         },
+        "Forensic sciences": {
+            "cat": "Applied/Natural", 
+            "methods": ["DNA Profiling", "Ballistics", "Toxicology", "Trace Analysis", "Bloodstain Pattern Analysis", "Fingerprint Identification"], 
+            "tools": ["Mass Spectrometer", "Luminol", "Comparison Microscope", "AFIS (Automated Fingerprint Identification System)", "Gas Chromatography"], 
+            "facets": ["Forensic Biology", "Forensic Chemistry", "Forensic Pathology", "Digital Forensics", "Forensic Odontology"]
+        },
         "Legal science": {
             "cat": "Social", 
             "methods": ["Legal Hermeneutics", "Comparative Law", "Dogmatic Method", "Empirical Legal Research"], 
@@ -911,6 +917,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
