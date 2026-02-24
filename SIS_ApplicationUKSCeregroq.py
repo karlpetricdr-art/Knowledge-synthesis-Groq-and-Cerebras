@@ -553,56 +553,130 @@ if file_attachment_content:
     processed_query_context += f"\n\n[SUPPLEMENTAL DATA FROM ATTACHMENT]:\n{file_attachment_content}"
 
 # =========================================================
-# 3. JEDRO SINTEZE: MULTI-PROVIDER AI + INTERCONNECTED 18D GRAPH
 # =========================================================
-if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=True):
-    if not api_key: st.error(f"Missing {api_provider} API Key. Please provide your own key in the sidebar.")
-    elif not user_query and not idea_query: st.warning("Please provide at least one inquiry.")
+# 3. SYNERGISTIC ENGINE: GROQ (SYNTHESIS) + CEREBRAS (IDEAS)
+# =========================================================
+
+# --- EXTEND SIDEBAR FOR DUAL KEYS ---
+with st.sidebar:
+    st.divider()
+    st.subheader("🔑 Dual-Engine Configuration")
+    groq_key = st.text_input("Groq API Key (for Synthesis):", type="password")
+    cerebras_key = st.text_input("Cerebras API Key (for Idea Production):", type="password")
+
+if st.button("🚀 Execute Synergistic Multi-Dimensional Synthesis", use_container_width=True):
+    if not groq_key or not cerebras_key:
+        st.error("This mode requires BOTH Groq and Cerebras API keys for synergy.")
+    elif not user_query and not idea_query:
+        st.warning("Please provide inquiries in the text boxes.")
     else:
         try:
-            # --- DEFINE LOGIC FLAGS ---
-            full_text_input = (user_query + " " + idea_query).lower()
+            # --- 1. PREPARE CONTEXTS ---
+            biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
             
-            # Identify if the demand involves production
-            is_idea_mode = (idea_query.strip() != "") or ("create useful ideas" in full_text_input) or ("innovative ideas" in full_text_input)
-            
-            # Determine logic type based on specific demands
-            trigger_strict_hier = "use strict hierarchical logic"
-            trigger_relational = "use relational logic"
-            
-            if trigger_strict_hier in full_text_input:
-                logic_type = "Strict hierarchical logic"
-                logic_desc = "Uporabi IZKLJUČNO hierarhične relacije: TT (Top Term), BT (Broader Term), NT (Narrower Term). Fokus na vertikalni taksonomiji."
-            elif trigger_relational in full_text_input:
-                logic_type = "Relational logic"
-                logic_desc = "Uporabi IZKLJUČNO lateralne relacije: AS (Associative), EQ (Equivalent), IN (Inheritance/Class). Fokus na mrežni povezanosti."
-            else:
-                logic_type = "Hierarchical associative logic"
-                logic_desc = "Uporabi CELOTEN nabor relacij: TT (Top Term), BT (Broader Term), NT (Narrower Term), RT (Related Term), AS (Associative), EQ (Equivalent) in IN (Inheritance/Instance)."
+            # --- 2. GROQ TASK: KNOWLEDGE SYNTHESIS (IMA ARCHITECTURE) ---
+            def get_groq_synthesis():
+                client = OpenAI(api_key=groq_key, base_url="https://api.groq.com/openai/v1")
+                sys_prompt = f"""
+                You are the 'Deep Synthesis Engine'. Focus on the INTEGRATED METAMODEL ARCHITECTURE (IMA): {json.dumps(HUMAN_THINKING_METAMODEL)}.
+                Task: Synthesize a deep theoretical dissertation based on: {user_query}.
+                Integrate Bibliography: {biblio}.
+                Output: 800 words of dense research.
+                Format: End with '### SYNTHESIS_NODES' and a JSON list of nodes/edges following IMA logic.
+                """
+                res = client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "system", "content": sys_prompt}, {"role": "user", "content": user_query}],
+                    temperature=0.4
+                )
+                return res.choices[0].message.content
 
-            # --- STEP 2: SUPERIOR DUAL-ARCHITECTURE CONNECTION ---
-            # Explicit separation of instructions for the Language Model
-            metamodel_instruction = f"MANDATORY IMA ARCHITECTURE INTEGRATION (IMA + SPECIAL ADD-ON): {json.dumps(HUMAN_THINKING_METAMODEL)}"
-            mental_approaches_instruction = f"MANDATORY MENTAL APPROACHES DIAGRAM LOGIC (MA): {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}"
+            # --- 3. CEREBRAS TASK: IDEA PRODUCTION (MA LOGIC) ---
+            def get_cerebras_ideas():
+                client = OpenAI(api_key=cerebras_key, base_url="https://api.cerebras.ai/v1")
+                sys_prompt = f"""
+                You are the 'Innovation Engine'. Focus on MENTAL APPROACHES (MA): {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}.
+                Task: Produce RADICAL INNOVATIVE IDEAS based on: {idea_query if idea_query else user_query}.
+                Focus on 'Useful Innovative Ideas' and 'Conflict Resolution' nodes.
+                Output: 600 words of generative, creative proposals.
+                Format: End with '### IDEA_NODES' and a JSON list of nodes/edges following MA logic.
+                """
+                res = client.chat.completions.create(
+                    model="llama3.1-70b",
+                    messages=[{"role": "system", "content": sys_prompt}, {"role": "user", "content": idea_query}],
+                    temperature=0.9
+                )
+                return res.choices[0].message.content
+
+            # Execution with visual feedback
+            with st.status("Engaging Dual-Engine Synergy...", expanded=True) as status:
+                st.write("📡 Groq: Processing Knowledge Synthesis & Bibliographies...")
+                synthesis_raw = get_groq_synthesis()
+                st.write("⚡ Cerebras: Generating Radical Innovative Ideas...")
+                ideas_raw = get_cerebras_ideas()
+                status.update(label="Synergy Complete!", state="complete", expanded=False)
+
+            # --- 4. DATA MERGING & PARSING ---
+            # Extract Text
+            synthesis_text = synthesis_raw.split("### SYNTHESIS_NODES")[0]
+            ideas_text = ideas_raw.split("### IDEA_NODES")[0]
             
-            idea_production_prompt = ""
-            if is_idea_mode:
-                idea_production_prompt = """
-                *** SUPERIOR IDEA PRODUCTION MODE ACTIVE ***
-                You are now expected to PERFORM KNOWLEDGE SYNTHESIS AND PRODUCE NEW USEFUL INNOVATIVE IDEAS.
-                Shift from descriptive analysis to RADICAL INNOVATION. 
-                Use nodes like 'Conflict situation', 'Problem', and 'Mental approaches' (e.g., Perspective shifting, Bipolarity) to:
-                1. Forge entirely new cross-disciplinary theories.
-                2. Design novel solutions that don't exist in current literature.
-                3. Propose 'Useful Innovative Ideas' that solve the stated problem using the rules provided.
-                Your response must emphasize original conceptual synthesis AND generative creativity.
-                """
-                st.markdown("""<div class="idea-mode-box">✨ Production & Synthesis Mode engaged: Generating novel innovative concepts using separated Metamodel and Mental Logic.</div>""", unsafe_allow_html=True)
-            else:
-                idea_production_prompt = """
-                *** KNOWLEDGE SYNTHESIS MODE ***
-                Focus strictly on existing knowledge structures, taxonomy, and scientific interconnectedness.
-                """
+            # Extract and Merge JSON Graph Data
+            all_nodes = []
+            all_edges = []
+            
+            def extract_json(raw_text, marker):
+                try:
+                    parts = raw_text.split(marker)
+                    if len(parts) > 1:
+                        data = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
+                        return data.get("nodes", []), data.get("edges", [])
+                except: return [], []
+                return [], []
+
+            nodes_s, edges_s = extract_json(synthesis_raw, "### SYNTHESIS_NODES")
+            nodes_i, edges_i = extract_json(ideas_raw, "### IDEA_NODES")
+            
+            # Combine everything
+            combined_nodes = nodes_s + nodes_i
+            combined_edges = edges_s + edges_i
+
+            # --- 5. RENDER OUTPUT ---
+            st.markdown("## 🏛️ Synergistic Knowledge Report")
+            
+            col_out1, col_out2 = st.columns(2)
+            with col_out1:
+                st.subheader("🔍 Groq: Systemic Synthesis")
+                st.markdown(synthesis_text)
+            with col_out2:
+                st.subheader("💡 Cerebras: Innovative Concepts")
+                st.markdown(ideas_text)
+
+            # Unified Visualization
+            st.divider()
+            st.subheader("🕸️ Integrated Multi-Dimensional Semantic Network")
+            st.caption("Merging IMA (Metamodel) and MA (Mental Approaches) into a single 18D architecture.")
+            
+            elements = []
+            # De-duplicate nodes by ID
+            seen_nodes = set()
+            for n in combined_nodes:
+                if n["id"] not in seen_nodes:
+                    elements.append({"data": {
+                        "id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"),
+                        "size": 60, "shape": n.get("shape", "ellipse"), "z_index": 1
+                    }})
+                    seen_nodes.add(n["id"])
+            
+            for e in combined_edges:
+                elements.append({"data": {
+                    "source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")
+                }})
+            
+            render_cytoscape_network(elements, "synergy_graph")
+
+        except Exception as e:
+            st.error(f"Synergy failed: {str(e)}")
 
             biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
             
@@ -725,6 +799,7 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
 # PODNOŽJE (ZAHVALA IN VERZIJA)
 st.divider()
 st.caption("SIS Universal Knowledge Synthesizer | v22.4 Separation Architecture Engine | Cerebras Integrated | 2026")
+
 
 
 
