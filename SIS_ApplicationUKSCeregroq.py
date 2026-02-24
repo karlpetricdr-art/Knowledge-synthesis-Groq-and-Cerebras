@@ -12,8 +12,9 @@ import streamlit.components.v1 as components
 # =============================================================================
 # 0. GLOBAL CONFIGURATION & SYSTEM TIMESTAMP (FEBRUARY 24, 2026)
 # =============================================================================
-# The application date is hardcoded to reflect the specific session requirements.
+# Hardcoded system date for the current session as requested.
 SYSTEM_DATE = "February 24, 2026"
+VERSION = "v22.4 Sequential Synergy Engine"
 
 st.set_page_config(
     page_title=f"SIS Universal Knowledge Synthesizer - {SYSTEM_DATE}",
@@ -22,8 +23,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Deep CSS Integration for Semantic Highlights, Google Links, and Layout Boxes
-# This section ensures the UI matches the high-sophistication aesthetic required.
+# Deep CSS Integration for Sidebar Visibility, High-Contrast Text, and Layout Boxes
+# This section fixes the "badly visible Knowledge explorer" and sidebar artifacts.
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
@@ -32,6 +33,33 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
+    /* SIDEBAR OVERRIDE: HIGH CONTRAST & VISIBILITY */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 2px solid #e9ecef;
+        min-width: 350px;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown p, 
+    [data-testid="stSidebar"] .stMarkdown li,
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2,
+    [data-testid="stSidebar"] .stMarkdown h3 {
+        color: #1d3557 !important;
+        font-size: 0.98em !important;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    /* Fixing Expander Visibility in Sidebar */
+    .st-emotion-cache-p3y65y {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 10px !important;
+        margin-bottom: 10px;
+    }
+
+    /* Semantic Highlighting Styles */
     .semantic-node-highlight {
         color: #2a9d8f;
         font-weight: bold;
@@ -75,6 +103,7 @@ st.markdown("""
         font-size: 1.05em;
     }
     
+    /* Architectural Focus Boxes */
     .metamodel-box {
         padding: 25px;
         border-radius: 15px;
@@ -93,16 +122,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     
-    .idea-mode-box {
-        padding: 25px;
-        border-radius: 15px;
-        background-color: #fff4e6;
-        border-left: 8px solid #ff922b;
-        margin-bottom: 30px;
-        font-weight: bold;
-        color: #d9480f;
-    }
-
     .main-header-gradient {
         background: linear-gradient(90deg, #1d3557, #457b9d);
         -webkit-background-clip: text;
@@ -114,33 +133,28 @@ st.markdown("""
     .sidebar-logo-container {
         display: flex;
         justify-content: center;
-        padding: 15px 0;
+        padding: 10px 0;
+        margin-bottom: 10px;
     }
     
     .date-badge {
         background-color: #1d3557;
         color: white;
-        padding: 4px 12px;
+        padding: 6px 14px;
         border-radius: 50px;
         font-size: 0.85em;
         font-weight: 600;
-        margin-bottom: 10px;
-        display: inline-block;
+        margin-bottom: 20px;
+        display: block;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
-    /* Code block refinements */
-    code {
-        font-family: 'Fira Code', monospace !important;
-    }
-    
-    /* Custom Sidebar styling */
-    section[data-testid="stSidebar"] {
-        background-color: #fcfcfc;
-        border-right: 1px solid #eee;
-    }
-    
+    /* Sidebar Button Alignment */
     .stButton>button {
+        width: 100%;
         border-radius: 8px;
+        font-weight: 600;
         transition: all 0.2s ease;
     }
 </style>
@@ -166,7 +180,7 @@ SVG_3D_RELIEF = """
             <stop offset="100%" style="stop-color:#2e7d32;stop-opacity:1" />
         </linearGradient>
     </defs>
-    <circle cx="120" cy="120" r="100" fill="#f0f0f0" stroke="#000000" stroke-width="4" filter="url(#reliefShadow)" />
+    <circle cx="120" cy="120" r="100" fill="#fcfcfc" stroke="#1d3557" stroke-width="4" filter="url(#reliefShadow)" />
     <path d="M120 40 L50 180 L120 200 Z" fill="url(#pyramidSide)" />
     <path d="M120 40 L190 180 L120 200 Z" fill="#9e9e9e" />
     <rect x="116" y="110" width="8" height="70" rx="2" fill="#5d4037" />
@@ -175,15 +189,14 @@ SVG_3D_RELIEF = """
     <circle cx="145" cy="125" r="22" fill="#43a047" filter="url(#reliefShadow)" />
     <rect x="70" y="170" width="20" height="12" rx="2" fill="#1565c0" filter="url(#reliefShadow)" />
     <rect x="150" y="170" width="20" height="12" rx="2" fill="#c62828" filter="url(#reliefShadow)" />
-    <rect x="110" y="185" width="20" height="12" rx="2" fill="#f9a825" filter="url(#reliefShadow)" />
 </svg>
 """
 
 # =============================================================================
-# 1. CORE RENDERING & DATA FETCHING
+# 1. CORE RENDERING ENGINES & DATA FETCHING
 # =============================================================================
 
-def render_cytoscape_network(elements, container_id="cy_synergy_full"):
+def render_cytoscape_network(elements, container_id="cy_synergy_full_850"):
     """Interactive Cytoscape.js engine for high-density 18D graphs."""
     cyto_html = f"""
     <div style="position: relative; width: 100%;">
@@ -257,11 +270,10 @@ def render_cytoscape_network(elements, container_id="cy_synergy_full"):
                     padding: 60, 
                     animate: true, 
                     nodeRepulsion: 45000, 
-                    idealEdgeLength: 180 
+                    idealEdgeLength: 200 
                 }}
             }});
 
-            // MAGNIFYING GLASS LOGIC
             cy.on('mouseover', 'node', function(e){{
                 var sel = e.target;
                 cy.elements().addClass('dimmed');
@@ -272,7 +284,6 @@ def render_cytoscape_network(elements, container_id="cy_synergy_full"):
                 cy.elements().removeClass('dimmed highlighted');
             }});
             
-            // ANCHOR LINK NAVIGATION
             cy.on('tap', 'node', function(evt){{
                 var elementId = evt.target.id();
                 var target = window.parent.document.getElementById(elementId);
@@ -298,7 +309,7 @@ def render_cytoscape_network(elements, container_id="cy_synergy_full"):
     components.html(cyto_html, height=800)
 
 def fetch_author_bibliographies(author_input):
-    """Retrieves high-fidelity bibliographic data from ORCID and Semantic Scholar."""
+    """Retrieves high-fidelity bibliographic data from ORCID and Semantic Scholar with years."""
     if not author_input: return ""
     author_list = [a.strip() for a in author_input.split(",")]
     comprehensive_biblio = ""
@@ -307,32 +318,26 @@ def fetch_author_bibliographies(author_input):
     for auth in author_list:
         orcid_id = None
         try:
-            # Search ORCID ID
-            search_url = f"https://pub.orcid.org/v3.0/search/?q={auth}"
-            s_res = requests.get(search_url, headers=headers, timeout=5).json()
+            s_res = requests.get(f"https://pub.orcid.org/v3.0/search/?q={auth}", headers=headers, timeout=5).json()
             if s_res.get('result'):
                 orcid_id = s_res['result'][0]['orcid-identifier']['path']
         except: pass
 
         if orcid_id:
             try:
-                # Get ORCID Record
-                record_url = f"https://pub.orcid.org/v3.0/{orcid_id}/record"
-                r_res = requests.get(record_url, headers=headers, timeout=5).json()
+                r_res = requests.get(f"https://pub.orcid.org/v3.0/{orcid_id}/record", headers=headers, timeout=5).json()
                 works = r_res.get('activities-summary', {}).get('works', {}).get('group', [])
                 comprehensive_biblio += f"\n[ORCID REPOSITORY: {auth.upper()} ({orcid_id})]\n"
                 if works:
                     for work in works[:12]:
                         summary = work.get('work-summary', [{}])[0]
-                        title = summary.get('title', {}).get('title', {}).get('value', 'Unknown Title')
-                        pub_date = summary.get('publication-date')
-                        year = pub_date.get('year').get('value', 'n.d.') if pub_date and pub_date.get('year') else "n.d."
+                        title = summary.get('title', {}).get('title', {}).get('value', 'Unknown')
+                        year = work.get('publication-date', {}).get('year', {}).get('value', 'n.d.')
                         comprehensive_biblio += f"• ({year}) {title}\n"
-                else: comprehensive_biblio += "- No public metadata found in ORCID.\n"
+                else: comprehensive_biblio += "- No metadata found in ORCID.\n"
             except: pass
         else:
             try:
-                # Fallback to Semantic Scholar
                 ss_url = f"https://api.semanticscholar.org/graph/v1/paper/search?query=author:\"{auth}\"&limit=8&fields=title,year"
                 ss_res = requests.get(ss_url, timeout=5).json()
                 papers = ss_res.get("data", [])
@@ -345,237 +350,178 @@ def fetch_author_bibliographies(author_input):
     return comprehensive_biblio
 
 # =============================================================================
-# 2. ARCHITECTURAL ONTOLOGIES (IMA & MA) - EXPANDED
+# 2. ARCHITECTURAL ONTOLOGIES (IMA & MA) - EXHAUSTIVE DESCRIPTIONS
 # =============================================================================
 
-# A. INTEGRATED METAMODEL ARCHITECTURE (IMA) - Structural Logic
 HUMAN_THINKING_METAMODEL = {
     "nodes": {
         "Human mental concentration": {
-            "color": "#ADB5BD", 
-            "shape": "rectangle", 
-            "desc": "The foundational state of cognitive focus required for interdisciplinary synthesis and logical rigor."
+            "color": "#ADB5BD", "shape": "rectangle", 
+            "desc": "The prerequisite cognitive state for any deep interdisciplinary synthesis; involves the focused application of mental energy toward structural clarity."
         },
         "Identity": {
-            "color": "#C6EFCE", 
-            "shape": "rectangle", 
-            "desc": "The subjective core of the cognitive actor, including values, professional background, and systemic position."
+            "color": "#C6EFCE", "shape": "rectangle", 
+            "desc": "The subjective core of the researcher or agent, containing professional ethical parameters and specialized scientific lenses."
         },
         "Autobiographical memory": {
-            "color": "#C6EFCE", 
-            "shape": "rectangle", 
-            "desc": "The repository of personal and professional experiences that color logical interpretations and mission setting."
+            "color": "#C6EFCE", "shape": "rectangle", 
+            "desc": "The historical database of past problem-solving cycles and experiential knowledge that informs current logic."
         },
         "Mission": {
-            "color": "#92D050", 
-            "shape": "rectangle", 
-            "desc": "The high-level existential or professional purpose driving the current inquiry or problem-solving cycle."
+            "color": "#92D050", "shape": "rectangle", 
+            "desc": "The existential or professional imperative that drives the direction of inquiry and synthesis."
         },
         "Vision": {
-            "color": "#FFFF00", 
-            "shape": "rectangle", 
-            "desc": "A mental simulation of the desired future state, serving as the blueprint for long-term goal setting."
+            "color": "#FFFF00", "shape": "rectangle", 
+            "desc": "The simulated future state where the problem is resolved, acting as the magnetic pull for goal-setting."
         },
         "Goal": {
-            "color": "#00B0F0", 
-            "shape": "rectangle", 
-            "desc": "Specific, quantifiable, and time-bound targets that materialize the mission within the constraints of reality."
+            "color": "#00B0F0", "shape": "rectangle", 
+            "desc": "Concrete, quantifiable milestones within the vision that dictate resource allocation and methodological choice."
         },
         "Problem": {
-            "color": "#F2DCDB", 
-            "shape": "rectangle", 
-            "desc": "A perceived gap or obstruction between the current state and the goal/vision state."
+            "color": "#F2DCDB", "shape": "rectangle", 
+            "desc": "The central obstruction to the mission; defined by the gap between current knowledge and the desired goal."
         },
         "Ethics/moral": {
-            "color": "#FFC000", 
-            "shape": "rectangle", 
-            "desc": "The internal filtration system used to determine the validity and acceptability of proposed solutions."
+            "color": "#FFC000", "shape": "rectangle", 
+            "desc": "The non-negotiable value system that filters out solution pathways that are scientifically or socially incompatible."
         },
         "Hierarchy of interests": {
-            "color": "#F8CBAD", 
-            "shape": "rectangle", 
-            "desc": "The ordering of desires and needs that dictates where cognitive resources are allocated during conflict."
+            "color": "#F8CBAD", "shape": "rectangle", 
+            "desc": "The ordering of nodes based on their strategic importance to the survival and mission of the system."
         },
         "Rule": {
-            "color": "#F2F2F2", 
-            "shape": "rectangle", 
-            "desc": "Formal or informal constraints (laws, scientific principles, protocols) that govern the search for solutions."
+            "color": "#F2F2F2", "shape": "rectangle", 
+            "desc": "The structural, logical, and legal constraints that govern how knowledge nodes interact within the metamodel."
         },
         "Decision-making": {
-            "color": "#FFFF99", 
-            "shape": "rectangle", 
-            "desc": "The actual act of choosing between alternative pathways to resolve a identified problem."
+            "color": "#FFFF99", "shape": "rectangle", 
+            "desc": "The algorithmic act of selecting the most efficient pathway toward goal achievement based on current knowledge."
         },
         "Problem solving": {
-            "color": "#D9D9D9", 
-            "shape": "rectangle", 
-            "desc": "The algorithmic application of tools and knowledge to remove obstructions and reach goals."
+            "color": "#D9D9D9", "shape": "rectangle", 
+            "desc": "The active process of leveraging tools and classification systems to remove identifying obstructions."
         },
         "Conflict situation": {
-            "color": "#00FF00", 
-            "shape": "rectangle", 
-            "desc": "A state where two or more goals, missions, or rules clash, requiring high-level synthesis."
+            "color": "#00FF00", "shape": "rectangle", 
+            "desc": "A state of high entropy where multiple missions, rules, or goals clash, requiring high-level synthesis."
         },
         "Knowledge": {
-            "color": "#DDEBF7", 
-            "shape": "rectangle", 
-            "desc": "The internalized collection of facts, theories, and models leveraged for reasoning."
+            "color": "#DDEBF7", "shape": "rectangle", 
+            "desc": "Internalized facts and theoretical constructs that serve as the building blocks for logic cycles."
         },
         "Tool": {
-            "color": "#00B050", 
-            "shape": "rectangle", 
-            "desc": "External instruments (software, hardware, methodologies) used to interact with the problem domain."
+            "color": "#00B050", "shape": "rectangle", 
+            "desc": "External instrumental utility used to manipulate information or environments."
         },
         "Experience": {
-            "color": "#00B050", 
-            "shape": "rectangle", 
-            "desc": "The practical skill and wisdom gained through the repetitive cycle of decision-making and problem-solving."
+            "color": "#00B050", "shape": "rectangle", 
+            "desc": "Practical wisdom gained through the actual application of knowledge to problem states."
         },
         "Classification": {
-            "color": "#CCC0DA", 
-            "shape": "rectangle", 
-            "desc": "The taxonomic act of grouping knowledge or problems into structured categories for better retrieval."
+            "color": "#CCC0DA", "shape": "rectangle", 
+            "desc": "The act of taxonomic ordering which reduces cognitive load by grouping disparate nodes."
         },
         "Psychological aspect": {
-            "color": "#F8CBAD", 
-            "shape": "rectangle", 
-            "desc": "The internal cognitive and emotional outcomes resulting from the success or failure of the synthesis."
+            "color": "#F8CBAD", "shape": "rectangle", 
+            "desc": "Internal outcomes concerning individual mental states, motivation, and cognitive fatigue."
         },
         "Sociological aspect": {
-            "color": "#00FFFF", 
-            "shape": "rectangle", 
-            "desc": "The external collective impact and systemic changes triggered by the produced ideas."
+            "color": "#00FFFF", "shape": "rectangle", 
+            "desc": "External outcomes concerning group dynamics, collective mission, and social structural change."
         }
     },
     "relations": [
-        ("Human mental concentration", "Identity", "has"),
-        ("Identity", "Autobiographical memory", "possesses"),
-        ("Mission", "Vision", "defines"),
-        ("Vision", "Goal", "leads to"),
-        ("Problem", "Identity", "challenges"),
-        ("Problem", "Mission", "obstructs"),
-        ("Ethics/moral", "Problem", "evaluates"),
-        ("Hierarchy of interests", "Goal", "prioritizes"),
-        ("Rule", "Decision-making", "constrains"),
-        ("Knowledge", "Tool", "utilizes"),
-        ("Experience", "Psychological aspect", "forms"),
-        ("Conflict situation", "Sociological aspect", "triggers"),
-        ("Problem solving", "Conflict situation", "resolves"),
-        ("Knowledge", "Classification", "organizes")
+        ("Human mental concentration", "Identity", "has"), ("Identity", "Autobiographical memory", "possesses"),
+        ("Mission", "Vision", "defines"), ("Vision", "Goal", "leads to"), ("Problem", "Identity", "challenges"),
+        ("Rule", "Decision-making", "constrains"), ("Knowledge", "Classification", "organizes")
     ]
 }
 
-# B. MENTAL APPROACHES (MA) - Cognitive Transformation Logic
 MENTAL_APPROACHES_ONTOLOGY = {
     "nodes": {
         "Perspective shifting": {
-            "color": "#00FF00", 
-            "shape": "diamond", 
-            "desc": "The ability to rotate the problem space and view it through disparate scientific and stakeholder lenses."
+            "color": "#00FF00", "shape": "diamond", 
+            "desc": "Rotating the problem space to see it through different stakeholders or scientific paradigms."
         },
         "Similarity and difference": {
-            "color": "#FFFF00", 
-            "shape": "diamond", 
-            "desc": "The fundamental pattern-recognition act of comparing current data against existing mental models."
+            "color": "#FFFF00", "shape": "diamond", 
+            "desc": "The primary act of pattern recognition; identifying anomalies and congruent knowledge nodes."
         },
         "Core": {
-            "color": "#FFC000", 
-            "shape": "diamond", 
-            "desc": "The distillation process of isolating the most critical, unchangeable essence of a complex problem."
+            "color": "#FFC000", "shape": "diamond", 
+            "desc": "The distillation of a problem into its fundamental, unchanging essence."
         },
         "Attraction": {
-            "color": "#F2A6A2", 
-            "shape": "diamond", 
-            "desc": "The force that draws disparate knowledge nodes together to form a novel synthesis."
+            "color": "#F2A6A2", "shape": "diamond", 
+            "desc": "The cognitive force drawing disparate concepts together toward a novel synergy."
         },
         "Repulsion": {
-            "color": "#D9D9D9", 
-            "shape": "diamond", 
-            "desc": "The logic of isolating incompatible theories or separating non-essential noise from the core."
+            "color": "#D9D9D9", "shape": "diamond", 
+            "desc": "The logical isolation of incompatible solutions or irrelevant noise from the central mission."
         },
         "Condensation": {
-            "color": "#CCC0DA", 
-            "shape": "diamond", 
-            "desc": "The reduction of vast informational complexity into a singular, actionable strategic insight."
+            "color": "#CCC0DA", "shape": "diamond", 
+            "desc": "The compression of complex data sets into singular, actionable strategic insights."
         },
         "Framework and foundation": {
-            "color": "#F8CBAD", 
-            "shape": "diamond", 
-            "desc": "Establishing the ground rules and logical boundaries within which innovation must occur."
+            "color": "#F8CBAD", "shape": "diamond", 
+            "desc": "Establishing the logical 'ground' and boundary state within which innovation occurs."
         },
         "Bipolarity and dialectics": {
-            "color": "#DDEBF7", 
-            "shape": "diamond", 
-            "desc": "The synthesis of truth through the tension of opposing forces (Thesis and Antithesis)."
+            "color": "#DDEBF7", "shape": "diamond", 
+            "desc": "Synthesis generated through the tension between opposing forces (Thesis and Antithesis)."
         },
         "Constant": {
-            "color": "#E1C1D1", 
-            "shape": "diamond", 
-            "desc": "Identifying invariants within a system that remain stable regardless of environmental flux."
+            "color": "#E1C1D1", "shape": "diamond", 
+            "desc": "Identifying stable system variables that do not change regardless of innovative shifts."
         },
         "Associativity": {
-            "color": "#E1C1D1", 
-            "shape": "diamond", 
-            "desc": "The lateral linking of knowledge nodes that do not share a direct causal or taxonomic path."
+            "color": "#E1C1D1", "shape": "diamond", 
+            "desc": "Non-linear, lateral linking of knowledge nodes that share hidden attributes."
         },
         "Induction": {
-            "color": "#B4C6E7", 
-            "shape": "diamond", 
-            "desc": "Building broad interdisciplinary theory from specific experimental or field observations."
+            "color": "#B4C6E7", "shape": "diamond", 
+            "desc": "Building broad interdisciplinary theory from specific, granular field observations."
         },
         "Whole and part": {
-            "color": "#00FF00", 
-            "shape": "diamond", 
-            "desc": "The mental zoom logic of navigating between holistic system views and granular component detail."
+            "color": "#00FF00", "shape": "diamond", 
+            "desc": "The zoom logic of navigating between holistic system architectures and component detail."
         },
         "Mini-max": {
-            "color": "#00FF00", 
-            "shape": "diamond", 
-            "desc": "The optimization filter focused on achieving maximum innovative utility with minimum cognitive friction."
+            "color": "#00FF00", "shape": "diamond", 
+            "desc": "The search for maximum innovative utility with minimum cognitive or material friction."
         },
         "Addition and composition": {
-            "color": "#FF00FF", 
-            "shape": "diamond", 
-            "desc": "Building complexity through the incremental layering of simpler conceptual building blocks."
+            "color": "#FF00FF", "shape": "diamond", 
+            "desc": "Incremental structure layering to build complexity from simple conceptual building blocks."
         },
         "Hierarchy": {
-            "color": "#C6EFCE", 
-            "shape": "diamond", 
-            "desc": "Organizing ideas into vertical priority stacks based on their foundational importance."
+            "color": "#C6EFCE", "shape": "diamond", 
+            "desc": "The act of vertical taxonomic ranking based on priority and systemic causality."
         },
         "Balance": {
-            "color": "#00B0F0", 
-            "shape": "diamond", 
-            "desc": "The search for dynamic equilibrium in systems with multiple competing variables."
+            "color": "#00B0F0", "shape": "diamond", 
+            "desc": "Achieving dynamic equilibrium between multiple competing innovative variables."
         },
         "Deduction": {
-            "color": "#92D050", 
-            "shape": "diamond", 
-            "desc": "Applying broad scientific laws or axioms to solve a specific problematic instance."
+            "color": "#92D050", "shape": "diamond", 
+            "desc": "Top-down application of broad scientific laws to resolve specific problematic instances."
         },
         "Abstraction and elimination": {
-            "color": "#00B0F0", 
-            "shape": "diamond", 
-            "desc": "The removal of specific real-world noise to reach a generic, re-usable innovative model."
+            "color": "#00B0F0", "shape": "diamond", 
+            "desc": "Removing non-essential context to reveal the generalizable model beneath."
         },
         "Pleasure and displeasure": {
-            "color": "#00FF00", 
-            "shape": "diamond", 
-            "desc": "The aesthetic and emotional feedback loop evaluating the elegance of a solution."
+            "color": "#00FF00", "shape": "diamond", 
+            "desc": "The evaluative aesthetic loop determining the 'elegance' and human compatibility of an idea."
         },
         "Openness and closedness": {
-            "color": "#FFC000", 
-            "shape": "diamond", 
-            "desc": "Determining whether a system should incorporate new external data or protect its current internal state."
+            "color": "#FFC000", "shape": "diamond", 
+            "desc": "The systemic boundary state governing whether to incorporate or reject external data nodes."
         }
-    },
-    "relations": [
-        ("Perspective shifting", "Similarity and difference", "leads to"),
-        ("Core", "Attraction", "initiates"),
-        ("Induction", "Whole and part", "links"),
-        ("Hierarchy", "Balance", "regulates"),
-        ("Deduction", "Abstraction and elimination", "processes")
-    ]
+    }
 }
 
 # =============================================================================
@@ -606,132 +552,26 @@ KNOWLEDGE_BASE = {
         "Concepts": "Abstract constructs and conceptual building blocks."
     },
     "Science fields": {
-        "Mathematics": {
-            "cat": "Formal", 
-            "methods": ["Axiomatization", "Formal Proof", "Computational Geometry", "Stochastic Modeling"], 
-            "tools": ["MATLAB", "LaTeX", "WolframAlpha", "NumPy"], 
-            "facets": ["Topology", "Algebra", "Number Theory", "Calculus"]
-        },
-        "Physics": {
-            "cat": "Natural", 
-            "methods": ["Quantum Modeling", "Particle Tracking", "Simulation", "Interferometry"], 
-            "tools": ["Accelerator", "Spectrometer", "Oscilloscopes", "Cryostats"], 
-            "facets": ["Relativity", "Thermodynamics", "Quantum Mechanics", "Astro-physics"]
-        },
-        "Chemistry": {
-            "cat": "Natural", 
-            "methods": ["Titration", "Molecular Spectroscopy", "Organic Synthesis", "Chromatography"], 
-            "tools": ["NMR", "Gas Chromatography", "Mass Spec", "Burettes"], 
-            "facets": ["Organic", "Physical", "Biochemistry", "Analytical"]
-        },
-        "Biology": {
-            "cat": "Natural", 
-            "methods": ["Gene Sequencing", "CRISPR", "Cell Culture", "Taxonomy"], 
-            "tools": ["Electron Microscope", "PCR Machine", "Petri Dishes", "Centrifuge"], 
-            "facets": ["Genetics", "Microbiology", "Ecology", "Neurobiology"]
-        },
-        "Neuroscience": {
-            "cat": "Natural", 
-            "methods": ["Neuroimaging", "Optogenetics", "Behavioral Mapping"], 
-            "tools": ["fMRI", "EEG", "Electrodes", "Patch Clamp"], 
-            "facets": ["Cognitive Neuroscience", "Neural Plasticity", "Synaptic Physiology"]
-        },
-        "Psychology": {
-            "cat": "Social", 
-            "methods": ["Double-Blind Trials", "Psychometrics", "Longitudinal Studies"], 
-            "tools": ["Standardized Tests", "Eye Tracking", "Surveys", "Biofeedback"], 
-            "facets": ["Behavioral", "Clinical", "Developmental", "Cognitive"]
-        },
-        "Sociology": {
-            "cat": "Social", 
-            "methods": ["Ethnography", "Survey Design", "Social Network Analysis"], 
-            "tools": ["NVivo", "SPSS", "Stata", "Census Data"], 
-            "facets": ["Demography", "Stratification", "Social Dynamics"]
-        },
-        "Computer Science": {
-            "cat": "Formal", 
-            "methods": ["Algorithm Design", "Formal Verification", "Parallel Computing"], 
-            "tools": ["GPU Clusters", "Docker", "Compilers", "VS Code"], 
-            "facets": ["AI", "Cybersecurity", "Blockchain", "Quantum Computing"]
-        },
-        "Medicine": {
-            "cat": "Applied", 
-            "methods": ["Clinical Trials", "Epidemiology", "Radiology"], 
-            "tools": ["MRI", "CT", "Biomarker Assays", "Ultrasound"], 
-            "facets": ["Genomics", "Immunology", "Pathology", "Oncology"]
-        },
-        "Engineering": {
-            "cat": "Applied", 
-            "methods": ["Finite Element Analysis", "Prototyping", "Stress Testing"], 
-            "tools": ["CAD", "3D Printers", "Load Cells", "Simulation Software"], 
-            "facets": ["Robotics", "Nanotech", "Civil Eng", "Electrical Eng"]
-        },
-        "Legal science": {
-            "cat": "Social", 
-            "methods": ["Legal Hermeneutics", "Comparative Law", "Dogmatic Method"], 
-            "tools": ["Case Law Archives", "Legislative Databases", "Westlaw"], 
-            "facets": ["Jurisprudence", "Constitutional Law", "Criminal Law"]
-        },
-        "Economics": {
-            "cat": "Social", 
-            "methods": ["Econometrics", "Game Theory", "Macro Modeling"], 
-            "tools": ["Stata", "Bloomberg", "R", "Python"], 
-            "facets": ["Macroeconomics", "Finance", "Behavioral Econ"]
-        },
-        "Philosophy": {
-            "cat": "Humanities", 
-            "methods": ["Socratic Method", "Dialectics", "Phenomenology"], 
-            "tools": ["Logic Mapping", "Critical Discourse Analysis"], 
-            "facets": ["Epistemology", "Ethics", "Metaphysics", "Logic"]
-        },
-        "Linguistics": {
-            "cat": "Humanities", 
-            "methods": ["Corpus Analysis", "Syntactic Parsing", "Historical Phonetics"], 
-            "tools": ["Praat", "NLTK", "WordNet", "ELAN"], 
-            "facets": ["Semantics", "Phonology", "Sociolinguistics"]
-        },
-        "Ecology": {
-            "cat": "Natural", 
-            "methods": ["Remote Sensing", "Trophic Modeling", "Field Sampling"], 
-            "tools": ["GIS", "Biosensors", "Lidar", "Drones"], 
-            "facets": ["Biodiversity", "Biogeochemistry", "Conservation"]
-        },
-        "History": {
-            "cat": "Humanities", 
-            "methods": ["Archival Research", "Historiography", "Oral History"], 
-            "tools": ["Radiocarbon Dating", "Microfilm", "Digital Archives"], 
-            "facets": ["Military History", "Diplomacy", "Ancient Civilizations"]
-        },
-        "Criminology": {
-            "cat": "Social", 
-            "methods": ["Profiling", "Case Studies", "Victimology"], 
-            "tools": ["Crime Mapping", "AFIS", "CODIS"], 
-            "facets": ["Penology", "Forensic Psych", "Criminal Justice"]
-        },
-        "Forensic sciences": {
-            "cat": "Natural", 
-            "methods": ["Trace Analysis", "DNA Profiling", "Ballistics"], 
-            "tools": ["Luminol", "Mass Spec", "Gas Chromatography"], 
-            "facets": ["Digital Forensics", "Pathology", "Odontology"]
-        },
-        "Architecture": {
-            "cat": "Humanities/Applied",
-            "methods": ["Parametric Design", "Sustainability Analysis", "BIM"],
-            "tools": ["Revit", "Rhino 3D", "Photogrammetry"],
-            "facets": ["Urban Design", "Heritage Conservation", "Landscape Arch"]
-        },
-        "Pedagogy": {
-            "cat": "Social",
-            "methods": ["Instructional Design", "Action Research", "Differentiated Learning"],
-            "tools": ["LMS Systems", "Interactive Whiteboards"],
-            "facets": ["Educational Psych", "Curriculum Dev", "Special Education"]
-        },
-        "Library Science": {
-            "cat": "Applied",
-            "methods": ["Taxonomy", "Archival Appraisal", "Information Retrieval"],
-            "tools": ["OPAC", "Metadata Systems", "Thesauri"],
-            "facets": ["Knowledge Org", "Digital Curation", "Bibliometrics"]
-        }
+        "Mathematics": {"cat": "Formal", "methods": ["Axiomatization", "Formal Proof", "Stochastic Modeling"], "tools": ["MATLAB", "LaTeX", "WolframAlpha"], "facets": ["Topology", "Algebra", "Calculus"]},
+        "Physics": {"cat": "Natural", "methods": ["Quantum Modeling", "Particle Tracking"], "tools": ["Accelerator", "Spectrometer"], "facets": ["Relativity", "Quantum Mechanics"]},
+        "Chemistry": {"cat": "Natural", "methods": ["Molecular Spectroscopy", "Organic Synthesis"], "tools": ["NMR", "Mass Spec"], "facets": ["Biochemistry", "Physical Chemistry"]},
+        "Biology": {"cat": "Natural", "methods": ["Gene Sequencing", "CRISPR"], "tools": ["Electron Microscope", "PCR"], "facets": ["Genetics", "Microbiology", "Ecology"]},
+        "Neuroscience": {"cat": "Natural", "methods": ["Neuroimaging", "Optogenetics"], "tools": ["fMRI", "EEG"], "facets": ["Cognitive Neuroscience", "Neural Plasticity"]},
+        "Psychology": {"cat": "Social", "methods": ["Psychometrics", "Longitudinal Studies"], "tools": ["Standardized Tests", "Eye Tracking"], "facets": ["Behavioral", "Clinical"]},
+        "Sociology": {"cat": "Social", "methods": ["Ethnography", "Network Analysis"], "tools": ["NVivo", "SPSS"], "facets": ["Demography", "Stratification"]},
+        "Computer Science": {"cat": "Formal", "methods": ["Algorithm Design", "Verification"], "tools": ["GPU Clusters", "Docker"], "facets": ["AI", "Cybersecurity"]},
+        "Medicine": {"cat": "Applied", "methods": ["Clinical Trials", "Epidemiology"], "tools": ["MRI", "Biomarker Assays"], "facets": ["Genomics", "Immunology"]},
+        "Engineering": {"cat": "Applied", "methods": ["Finite Element Analysis", "Prototyping"], "tools": ["CAD", "3D Printers"], "facets": ["Robotics", "Nanotechnology"]},
+        "Legal science": {"cat": "Social", "methods": ["Legal Hermeneutics", "Comparative Law"], "tools": ["Legislative DB", "Westlaw"], "facets": ["Jurisprudence", "Criminal Law"]},
+        "Economics": {"cat": "Social", "methods": ["Econometrics", "Game Theory"], "tools": ["Bloomberg", "Stata"], "facets": ["Macroeconomics", "Behavioral Econ"]},
+        "Philosophy": {"cat": "Humanities", "methods": ["Socratic Method", "Phenomenology"], "tools": ["Logic Mapping"], "facets": ["Epistemology", "Ethics", "Metaphysics"]},
+        "Linguistics": {"cat": "Humanities", "methods": ["Corpus Analysis", "Syntactic Parsing"], "tools": ["Praat", "NLTK"], "facets": ["Semantics", "Sociolinguistics"]},
+        "Ecology": {"cat": "Natural", "methods": ["Remote Sensing", "Trophic Modeling"], "tools": ["GIS", "Biosensors"], "facets": ["Biodiversity", "Biogeochemistry"]},
+        "History": {"cat": "Humanities", "methods": ["Archival Research", "Prosopography"], "tools": ["Digital Archives"], "facets": ["Social History", "Military History"]},
+        "Architecture": {"cat": "Applied", "methods": ["Parametric Design"], "tools": ["Revit", "Rhino 3D"], "facets": ["Urban Design", "Sustainability"]},
+        "Geology": {"cat": "Natural", "methods": ["Stratigraphy", "Mineralogy"], "tools": ["Seismograph"], "facets": ["Tectonics", "Petrology"]},
+        "Library Science": {"cat": "Applied", "methods": ["Taxonomy", "Archival Appraisal"], "tools": ["OPAC"], "facets": ["Retrieval", "Knowledge Org"]},
+        "Forensic sciences": {"cat": "Natural", "methods": ["Trace Analysis", "DNA Profiling"], "tools": ["Luminol", "Mass Spec"], "facets": ["Digital Forensics", "Pathology"]}
     }
 }
 
@@ -739,121 +579,99 @@ KNOWLEDGE_BASE = {
 # 4. INTERFACE CONSTRUCTION (STREAMLIT SIDEBAR & MAIN)
 # =============================================================================
 
-if 'expertise_val' not in st.session_state: st.session_state.expertise_val = "Expert"
 if 'show_user_guide' not in st.session_state: st.session_state.show_user_guide = False
 
-# --- EXPANDED LEFT SIDEBAR ---
+# --- EXPANDED LEFT SIDEBAR: CORRECTED VISIBILITY ---
 with st.sidebar:
     st.markdown(f'<div class="sidebar-logo-container"><img src="data:image/svg+xml;base64,{get_svg_base64(SVG_3D_RELIEF)}" width="200"></div>', unsafe_allow_html=True)
-    st.header("⚙️ SYSTEM CONTROL")
-    st.markdown(f'<div class="date-badge">DATE: {SYSTEM_DATE}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="date-badge">SYSTEM SESSION: {SYSTEM_DATE}</div>', unsafe_allow_html=True)
     
-    # API INPUT SECTION
-    st.subheader("🔑 Access Credentials")
-    groq_api_key = st.text_input("Groq API Key (Phase 1 Synthesis):", type="password", help="Provides structural foundation via IMA.")
-    cerebras_api_key = st.text_input("Cerebras API Key (Phase 2 Ideas):", type="password", help="Generates innovations and graph via MA.")
+    st.subheader("🔑 Dual API Access")
+    groq_api_key = st.text_input("Groq API Key (Phase 1):", type="password", help="For structural research synthesis (IMA).")
+    cerebras_api_key = st.text_input("Cerebras API Key (Phase 2):", type="password", help="For generative idea production (MA).")
     
-    # INTERACTIVE BUTTONS & UTILITIES
     st.divider()
-    col_reset, col_guide = st.columns(2)
-    with col_reset:
-        if st.button("♻️ RESET", use_container_width=True):
+    col_res, col_gui = st.columns(2)
+    with col_res:
+        if st.button("♻️ RESET", help="Clear session state"):
             for key in list(st.session_state.keys()): del st.session_state[key]
             st.rerun()
-    with col_guide:
-        if st.button("📖 GUIDE", use_container_width=True):
+    with col_gui:
+        if st.button("📖 GUIDE", help="Toggle instructions"):
             st.session_state.show_user_guide = not st.session_state.show_user_guide
             st.rerun()
             
-    # EXTERNAL CONNECTOR BUTTONS (THE MISSING LINKS)
     st.divider()
-    st.subheader("🌐 EXTERNAL CONNECTORS")
+    st.subheader("🌐 External Connectors")
+    # RESTORED MISSING BUTTONS
     st.link_button("📂 GitHub Repository", "https://github.com/", use_container_width=True)
     st.link_button("🆔 ORCID Registry", "https://orcid.org/", use_container_width=True)
     st.link_button("🎓 Google Scholar", "https://scholar.google.com/", use_container_width=True)
     
-    # ONTOLOGY EXPLORERS (EXPANDERS)
     st.divider()
-    st.subheader("📚 KNOWLEDGE EXPLORER")
-    with st.expander("👤 User Profiles"):
-        for p, d in KNOWLEDGE_BASE["User profiles"].items(): st.write(f"**{p}**: {d['description']}")
-    with st.expander("🧠 Mental Approaches (MA)"):
-        for m, d in MENTAL_APPROACHES_ONTOLOGY["nodes"].items(): st.write(f"• **{m}**: {d['desc']}")
-    with st.expander("🏛️ Metamodel Nodes (IMA)"):
-        for n, d in HUMAN_THINKING_METAMODEL["nodes"].items(): st.write(f"• **{n}**: {d['desc']}")
-    with st.expander("🌍 Scientific Paradigms"):
-        for p, d in KNOWLEDGE_BASE["Scientific paradigms"].items(): st.write(f"**{p}**: {d}")
-    with st.expander("🔬 Science Fields (Detailed)"):
-        for s in sorted(KNOWLEDGE_BASE["Science fields"].keys()): st.write(f"• **{s}**")
-    with st.expander("🏗️ Structural Models"):
-        for m, d in KNOWLEDGE_BASE["Structural models"].items(): st.write(f"**{m}**: {d}")
+    st.subheader("📚 Knowledge Explorer")
+    # Fixing readability with clean expanders
+    with st.expander("👤 User Profile Ontologies", expanded=False):
+        for p, d in KNOWLEDGE_BASE["User profiles"].items(): 
+            st.markdown(f"**{p}**: {d['description']}")
+    with st.expander("🧠 Mental Approach (MA) Map", expanded=False):
+        for m, d in MENTAL_APPROACHES_ONTOLOGY["nodes"].items(): 
+            st.markdown(f"• **{m}**: {d['desc']}")
+    with st.expander("🏛️ Metamodel (IMA) Structures", expanded=False):
+        for n, d in HUMAN_THINKING_METAMODEL["nodes"].items(): 
+            st.markdown(f"• **{n}**: {d['desc']}")
+    with st.expander("🔬 Science Field Taxonomy", expanded=False):
+        for s in sorted(KNOWLEDGE_BASE["Science fields"].keys()): 
+            st.markdown(f"• **{s}**")
+    with st.expander("🏗️ Structural Model Context", expanded=False):
+        for m, d in KNOWLEDGE_BASE["Structural models"].items(): 
+            st.markdown(f"**{m}**: {d}")
 
 # --- MAIN PAGE CONTENT ---
 st.markdown('<h1 class="main-header-gradient">🧱 SIS Universal Knowledge Synthesizer</h1>', unsafe_allow_html=True)
-st.markdown(f"Advanced Multi-dimensional interdisciplinary pipeline | **{SYSTEM_DATE}**")
+st.markdown(f"**Advanced Sequential Synergy Pipeline** | Operating System Date: **{SYSTEM_DATE}**")
 
 if st.session_state.show_user_guide:
     st.info(f"""
-    **Sequential Synergy Pipeline Guide (Updated {SYSTEM_DATE}):**
-    1. **Dual Engines**: Enter your Groq and Cerebras keys. Groq handles logical synthesis; Cerebras handles creative production.
-    2. **Research Inquiry (Step 1)**: Groq builds a foundation (approx 1500 words) using Integrated Metamodel Architecture (IMA).
-    3. **Innovation Prompt (Step 2)**: Cerebras takes Groq's research foundation and applies Mental Approaches (MA) logic to generate novel ideas.
-    4. **Semantic Network**: The final interactive graph is produced by Cerebras, mapping the interconnections between IMA and MA concepts.
-    5. **Interaction**: Hover over nodes to see a magnifying effect on their neighbors. Click on nodes to auto-scroll and highlight specific text segments.
+    **Sequential Synergy Pipeline Guide (Feb 2026 Update):**
+    1. **Dual Engines**: Enter your Groq (Phase 1) and Cerebras (Phase 2) keys.
+    2. **Phase 1 (Research)**: Groq performs an exhaustive interdisciplinary synthesis using IMA logic.
+    3. **Phase 2 (Production)**: Cerebras takes the synthesis foundation and generates innovative 'Useful Innovative Ideas' using MA logic.
+    4. **Output Rendering**: Semantic highlighting provides Google Search links and node anchors.
+    5. **18D Visualization**: The interactive graph maps structural facts against generative ideas.
     """)
 
-# REFERENCE BOXES
 col_ref1, col_ref2 = st.columns(2)
 with col_ref1:
-    st.markdown("""
-    <div class="metamodel-box">
-        <b>🏛️ Phase 1: Groq (IMA Architecture)</b><br>
-        Structural reasoning using Identity, Mission, Problem, and Rule. Provides the interdisciplinary factual foundation.
-    </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown("""<div class="metamodel-box"><b>🏛️ Phase 1: Groq (IMA Architecture)</b><br>Structural reasoning using Identity, Mission, and Rule. Provides the interdisciplinary factual foundation.</div>""", unsafe_allow_html=True)
 with col_ref2:
-    st.markdown("""
-    <div class="mental-approach-box">
-        <b>🧠 Phase 2: Cerebras (MA Architecture)</b><br>
-        Cognitive transformation using Dialectics, Perspective Shifting, and Essence. Produces innovative solutions and high-density mapping.
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("""<div class="mental-approach-box"><b>🧠 Phase 2: Cerebras (MA Architecture)</b><br>Cognitive transformation using Perspective Shifting, Induction, and Essence. Generates mapping.</div>""", unsafe_allow_html=True)
 
-st.markdown("### 🛠️ CONFIGURE SYNERGY PIPELINE")
+st.markdown("### 🛠️ Configure Synergy Pipeline Build")
 
-# CONFIG ROW 1
+# Config Rows
 r1c1, r1c2, r1c3 = st.columns([1.5, 2, 1])
-with r1c1:
-    target_authors = st.text_input("👤 Authors for Metadata Analysis:", placeholder="Karl Petrič, Samo Kralj, Teodor Petrič", help="Fetches real ORCID publication history.")
-with r1c2:
-    sel_sciences = st.multiselect("2. Select Science Fields:", sorted(list(KNOWLEDGE_BASE["Science fields"].keys())), default=["Physics", "Psychology", "Sociology"])
-with r1c3:
-    expertise = st.select_slider("3. Expertise Level:", ["Novice", "Intermediate", "Expert"], value="Expert")
+with r1c1: target_authors = st.text_input("👤 Authors for ORCID Analysis:", placeholder="Karl Petrič, Samo Kralj, Teodor Petrič")
+with r1c2: sel_sciences = st.multiselect("2. Select Science Fields:", sorted(list(KNOWLEDGE_BASE["Science fields"].keys())), default=["Physics", "Psychology", "Sociology"])
+with r1c3: expertise = st.select_slider("3. Expertise Level:", ["Novice", "Intermediate", "Expert"], value="Expert")
 
-# CONFIG ROW 2
 r2c1, r2c2, r2c3 = st.columns(3)
-with r2c1:
-    sel_paradigms = st.multiselect("4. Scientific Paradigms:", list(KNOWLEDGE_BASE["Scientific paradigms"].keys()), default=["Rationalism"])
-with r2c2:
-    sel_models = st.multiselect("5. Structural Models:", list(KNOWLEDGE_BASE["Structural models"].keys()), default=["Concepts"])
-with r2c3:
-    goal_context = st.selectbox("6. Strategic Project Goal:", ["Scientific Research", "Problem Solving", "Educational", "Policy Making"])
+with r2c1: sel_paradigms = st.multiselect("4. Scientific Paradigms:", list(KNOWLEDGE_BASE["Scientific paradigms"].keys()), default=["Rationalism"])
+with r2c2: sel_models = st.multiselect("5. Structural Models:", list(KNOWLEDGE_BASE["Structural models"].keys()), default=["Concepts"])
+with r2c3: goal_context = st.selectbox("6. Strategic Project Goal:", ["Scientific Research", "Problem Solving", "Educational", "Policy Making"])
 
 st.divider()
 
-# INQUIRY AREA
+# Inquiry Area
 col_inq1, col_inq2, col_inq3 = st.columns([2, 2, 1])
-with col_inq1:
-    user_query = st.text_area("❓ STEP 1: Research Inquiry (for GROQ):", placeholder="Describe the problem factually for structural synthesis...", height=200)
-with col_inq2:
-    idea_query = st.text_area("💡 STEP 2: Innovation Prompt (for CEREBRAS):", placeholder="Define the targets for innovative idea production based on Phase 1...", height=200)
+with col_inq1: user_query = st.text_area("❓ STEP 1: Research Inquiry (for GROQ):", placeholder="Interdisciplinary research or structural foundation inquiry...", height=200)
+with col_inq2: idea_query = st.text_area("💡 STEP 2: Innovation Prompt (for CEREBRAS):", placeholder="Define innovation goals based on Phase 1 synthesis...", height=200)
 with col_inq3:
-    uploaded_file = st.file_uploader("📂 ATTACH DATA (.txt only):", type=['txt'], help="Attach local documents to provide further context to the AI engines.")
+    uploaded_file = st.file_uploader("📂 ATTACH DATA (.txt):", type=['txt'], help="Context for AI engines.")
     file_content = ""
     if uploaded_file: 
         file_content = uploaded_file.read().decode("utf-8")
-        st.success(f"Attached: {uploaded_file.name}")
+        st.success("File integrated.")
 
 # =============================================================================
 # 5. SYNERGY EXECUTION ENGINE (GROQ -> CEREBRAS)
@@ -861,39 +679,25 @@ with col_inq3:
 
 if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_container_width=True):
     if not groq_api_key or not cerebras_api_key:
-        st.error("❌ Dual-Model synergy requires both Groq and Cerebras keys in the sidebar.")
+        st.error("❌ Dual-Model synergy requires both Groq and Cerebras keys.")
     elif not user_query:
-        st.warning("⚠️ Phase 1 Research Inquiry is required to establish the foundation.")
+        st.warning("⚠️ Phase 1 Research Inquiry is required.")
     else:
         try:
             # Init Clients
             groq_client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
             cerebras_client = OpenAI(api_key=cerebras_api_key, base_url="https://api.cerebras.ai/v1")
-            
-            # Metadata fetch
             biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
 
-            # --- PHASE 1: GROQ (IMA Synthesis) ---
+            # --- PHASE 1: GROQ (IMA) ---
             with st.spinner('PHASE 1: Groq synthesizing structural foundation (IMA Logic)...'):
                 groq_sys = f"""
                 You are the SIS Research Synthesizer (Phase 1).
-                DATE OF OPERATION: {SYSTEM_DATE}
+                SESSION DATE: {SYSTEM_DATE}
                 STRICT IMA ARCHITECTURE FOCUS: {json.dumps(HUMAN_THINKING_METAMODEL)}
-                
-                DATA CONTEXT:
-                Sciences: {sel_sciences}. 
-                Paradigms: {sel_paradigms}. 
-                Expertise: {expertise}. 
-                Goal: {goal_context}.
-                Authors: {biblio}. 
-                Data Context: {file_content}
-
-                TASK:
-                Provide a factual, structurally-sound interdisciplinary dissertation (approx 1500 words).
-                Focus strictly on mapping the problem structure, identifying mission-critical rules, and taxonomic organization.
-                DO NOT generate innovative ideas or graph JSON yet. Only provide the deep research foundation.
+                DATA CONTEXT: Sciences: {sel_sciences}. Authors: {biblio}. Attachment: {file_content}
+                TASK: Provide a factual interdisciplinary dissertation (approx 1500 words).
                 """
-                
                 groq_resp = groq_client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[{"role": "system", "content": groq_sys}, {"role": "user", "content": user_query}],
@@ -901,30 +705,17 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                 )
                 groq_synthesis = groq_resp.choices[0].message.content
 
-            # --- PHASE 2: CEREBRAS (MA Innovation + Graph JSON) ---
-            with st.spinner('PHASE 2: Cerebras producing innovative ideas and semantic mapping (MA Logic)...'):
+            # --- PHASE 2: CEREBRAS (MA) ---
+            with st.spinner('PHASE 2: Cerebras producing innovative ideas and mapping (MA Logic)...'):
                 cerebras_sys = f"""
                 You are the SIS Innovation Engine (Phase 2).
-                DATE OF OPERATION: {SYSTEM_DATE}
-                
+                SESSION DATE: {SYSTEM_DATE}
                 STRICT MENTAL APPROACHES (MA) FOCUS: {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}
-                
-                TASK:
-                1. Review the RESEARCH FOUNDATION generated by your partner (Groq).
-                2. Apply MA logic (Dialectics, Core, Perspective Shifting) to generate radical 'Useful Innovative Ideas'.
-                3. Propose generative solutions that don't exist in existing literature.
-                4. End your response with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network (40-50 nodes).
-                
-                VISUAL RULES: 
-                - Use IMA colors/shapes (rectangles) for factual foundation concepts.
-                - Use MA colors/shapes (diamonds) for innovative transformation concepts.
-                - Ensure dense interconnection using BT (Broader), NT (Narrower), and AS (Associative) links.
-                
-                JSON schema: {{"nodes": [{{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}}], "edges": [{{"source": "n1", "target": "n2", "rel_type": "AS|BT|outcome_of"}}]}}
+                TASK: Use Groq's foundation to generate 'Useful Innovative Ideas' for: {idea_query}.
+                End with '### SEMANTIC_GRAPH_JSON' and JSON network (40-55 nodes).
+                Schema: {{"nodes": [{{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}}], "edges": [{{"source": "n1", "target": "n2", "rel_type": "AS|BT"}}]}}
                 """
-                
-                cerebras_prompt = f"[RESEARCH FOUNDATION GENERATED BY GROQ]:\n{groq_synthesis}\n\n[USER INNOVATION REQUEST]:\n{idea_query}"
-                
+                cerebras_prompt = f"GROQ FOUNDATION:\n{groq_synthesis}\n\nUSER TARGET:\n{idea_query}"
                 cerebras_resp = cerebras_client.chat.completions.create(
                     model="llama3.1-70b",
                     messages=[{"role": "system", "content": cerebras_sys}, {"role": "user", "content": cerebras_prompt}],
@@ -932,63 +723,52 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                 )
                 cerebras_innovation = cerebras_resp.choices[0].message.content
 
-            # --- POST-PROCESSING & RENDERING ---
+            # --- PROCESSING & RENDERING ---
             combined_content = f"## 📚 Phase 1: Research Foundation (Groq)\n{groq_synthesis}\n\n---\n## 💡 Phase 2: Useful Innovative Ideas (Cerebras)\n{cerebras_innovation}"
-            
             parts = combined_content.split("### SEMANTIC_GRAPH_JSON")
             main_markdown = parts[0]
             
-            # Semantic Processing (Google Links + Anchor linking)
             if len(parts) > 1:
                 try:
                     g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
                     for n in g_json.get("nodes", []):
                         lbl, nid = n["label"], n["id"]
                         g_url = urllib.parse.quote(lbl)
-                        pattern = re.compile(re.escape(lbl), re.IGNORECASE)
-                        replacement = f'<span id="{nid}"><a href="https://www.google.com/search?q={g_url}" target="_blank" class="semantic-node-highlight">{lbl}<i class="google-icon">↗</i></a></span>'
-                        main_markdown = pattern.sub(replacement, main_markdown, count=1)
+                        repl = f'<span id="{nid}"><a href="https://www.google.com/search?q={g_url}" target="_blank" class="semantic-node-highlight">{lbl}<i class="google-icon">↗</i></a></span>'
+                        main_markdown = main_markdown.replace(lbl, repl, 1)
                 except: pass
 
             st.subheader("📊 INTEGRATED PIPELINE RESULTS")
             st.markdown(main_markdown, unsafe_allow_html=True)
 
-            # Interactive Graph Visualization
             if len(parts) > 1:
                 try:
                     g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
                     st.subheader("🕸️ INTEGRATED SEQUENTIAL SEMANTIC NETWORK")
-                    st.caption(f"Mapped by Cerebras on {SYSTEM_DATE} based on the Groq-generated Research Foundation.")
-                    
+                    st.caption(f"Visual Mapping by Cerebras on {SYSTEM_DATE}.")
                     elements = []
                     for n in g_json.get("nodes", []):
                         level = n.get("type", "Branch")
-                        size = 110 if level == "Root" else (85 if level == "Branch" else 65)
-                        elements.append({"data": {
-                            "id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"),
-                            "size": size, "shape": n.get("shape", "rectangle"), "z_index": 1
-                        }})
+                        size = 110 if level == "Root" else 85
+                        elements.append({"data": {"id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"), "size": size, "shape": n.get("shape", "rectangle"), "z_index": 1}})
                     for e in g_json.get("edges", []):
-                        elements.append({"data": {
-                            "source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")
-                        }})
-                    render_cytoscape_network(elements, "viz_synergy_final_800")
-                except: st.warning("⚠️ Error: Could not parse Semantic Graph JSON from Cerebras innovation results.")
+                        elements.append({"data": {"source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")}})
+                    render_cytoscape_network(elements, "viz_synergy_final_850")
+                except: st.warning("⚠️ Error parsing Semantic Graph JSON.")
 
             if biblio:
-                with st.expander("📚 EXTENDED BIBLIOGRAPHIC METADATA"):
-                    st.text(biblio)
+                with st.expander("📚 EXTENDED BIBLIOGRAPHIC DATA"): st.text(biblio)
 
         except Exception as e:
-            st.error(f"❌ Sequential Synergy Failure: {e}")
+            st.error(f"❌ Pipeline Failure: {e}")
 
 # =============================================================================
-# 6. FOOTER & METRICS
+# 6. FOOTER
 # =============================================================================
 st.divider()
-st.caption(f"SIS Universal Knowledge Synthesizer | v22.4 Sequential Synergy | Groq & Cerebras Pipeline | {SYSTEM_DATE}")
+st.caption(f"SIS Universal Knowledge Synthesizer | v22.4 Sequential Synergy | Groq & Cerebras Pipeline | Operating Date: {SYSTEM_DATE}")
 st.write("")
-st.write("")
+
 
 
 
