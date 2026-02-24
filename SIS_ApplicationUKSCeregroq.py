@@ -651,6 +651,12 @@ KNOWLEDGE_BASE = {
             "methods": ["Profiling", "Longitudinal Studies", "Victimology Analysis", "Ethnography"], 
             "tools": ["Crime Mapping", "AFIS", "CODIS", "SPSS"], 
             "facets": ["Penology", "Forensic Psychology", "Police Science", "Criminal Justice"]
+        },
+        "Legal science": {
+            "cat": "Social", 
+            "methods": ["Legal Hermeneutics", "Comparative Law", "Dogmatic Method", "Empirical Legal Research"], 
+            "tools": ["Legislative Databases", "Case Law Archives", "Constitutional Records", "Westlaw", "LexisNexis"], 
+            "facets": ["Jurisprudence", "Constitutional Law", "Criminal Law", "Civil Law", "International Law"]
         }
     }
 }
@@ -887,6 +893,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
