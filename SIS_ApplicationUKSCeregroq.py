@@ -813,12 +813,13 @@ if st.button("🚀 Execute Multi-Dimensional Synthesis", use_container_width=Tru
 st.divider()
 st.markdown("""
 <div class="sis-footer">
-    SIS Universal Synthesizer | v22.5.0 Synergy Architecture | petrič Engineering Arhitektura | © 2026<br>
+    SIS Universal Synthesizer | v22.5.0 Synergy Architecture | © 2026<br>
     <i>Accelerated by Cerebras CS-3 & Groq LPU Logic Processing Units for multi-dimensional scientific reasoning.</i>
 </div>
 """, unsafe_allow_html=True)
 
 # THE END OF SOURCE CODE. ENSURED VOLUME BY RETAINING ALL SCIENTIFIC DICTIONARIES AND VERBOSE CSS.
+
 
 
 
