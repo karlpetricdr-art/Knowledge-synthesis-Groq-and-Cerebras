@@ -57,7 +57,7 @@ st.markdown("""
     [data-testid="stSidebar"] .stExpander li,
     [data-testid="stSidebar"] .stMarkdown span,
     [data-testid="stSidebar"] .stMarkdown div {
-        color: #001219 !important; /* Maximum Contrast */
+        color: #ffffff !important; /* Maximum Contrast */
         font-size: 0.98em !important;
         font-weight: 500 !important;
         line-height: 1.6 !important;
@@ -887,6 +887,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
