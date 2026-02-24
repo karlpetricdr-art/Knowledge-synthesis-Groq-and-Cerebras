@@ -592,6 +592,12 @@ KNOWLEDGE_BASE = {
             "tools": ["MRI", "CT Scanner", "Biomarker Assays", "Ultrasound"], 
             "facets": ["Genomics", "Immunology", "Oncology", "Internal Medicine"]
         },
+        "Psychiatry": {
+            "cat": "Applied/Medical", 
+            "methods": ["Clinical Trials", "Diagnostic Interviewing", "Case Formulation", "Psychopharmacological Modeling", "Neuroimaging Analysis"], 
+            "tools": ["DSM-5-TR", "ICD-11", "EEG", "fMRI", "Standardized Rating Scales (PHQ-9, HAM-D)"], 
+            "facets": ["Clinical Psychiatry", "Neuropsychiatry", "Forensic Psychiatry", "Child & Adolescent Psychiatry", "Geriatric Psychiatry"]
+        },
         "Engineering": {
             "cat": "Applied", 
             "methods": ["FEA Analysis", "Prototyping", "Stress Testing", "Systems Integration"], 
@@ -893,6 +899,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
