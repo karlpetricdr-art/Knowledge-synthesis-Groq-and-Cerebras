@@ -13,7 +13,7 @@ import streamlit.components.v1 as components
 # 0. GLOBAL CONFIGURATION & SYSTEM TIMESTAMP (FEBRUARY 24, 2026)
 # =============================================================================
 SYSTEM_DATE = "February 24, 2026"
-VERSION_ID = "v22.4.9 Sequential synergy-Architecture"
+VERSION_ID = "v22.5.0 Sequential-Synergy-Final-850"
 
 st.set_page_config(
     page_title=f"SIS Universal Knowledge Synthesizer - {SYSTEM_DATE}",
@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # Deep CSS Integration to fix Sidebar visibility, text contrast, and icon artifacts.
-# Targets the "keyboard_double_arrow_right" artifact and forced high-contrast Explorer.
+# Aggressively removes 'keyboard_double_arrow_right' and forces high-contrast Explorer readability.
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
@@ -34,20 +34,22 @@ st.markdown("""
 
     /* --- SIDEBAR ARTIFACT & VISIBILITY FIXES --- */
     [data-testid="stSidebar"] {
-        background-color: #fcfcfc !important;
+        background-color: #f8f9fa !important;
         border-right: 2px solid #e9ecef;
-        min-width: 360px;
+        min-width: 360px !important;
     }
 
-    /* Aggressive fix for keyboard_double_arrow_right and Streamlit artifacts */
+    /* Aggressive fix to obliterate keyboard_double_arrow_right and Streamlit artifacts */
     [data-testid="stSidebar"] [data-testid="stIcon"],
+    [data-testid="stSidebar"] svg[class*="st-emotion-cache"],
     [data-testid="stSidebar"] .st-emotion-cache-16idsys,
     [data-testid="stSidebar"] span[data-testid="stExpanderIcon"] {
         display: none !important;
         visibility: hidden !important;
+        width: 0 !important;
     }
     
-    /* Forcing high-contrast text in Knowledge Explorer */
+    /* Forcing high-contrast text in Knowledge Explorer for perfect readability */
     [data-testid="stSidebar"] .stMarkdown p, 
     [data-testid="stSidebar"] .stMarkdown li,
     [data-testid="stSidebar"] label,
@@ -59,7 +61,7 @@ st.markdown("""
         opacity: 1 !important;
     }
 
-    /* Re-styling Expander for better readability */
+    /* Re-styling Expander for deep contrast and clear hierarchy */
     .st-emotion-cache-p3y65y, .stExpander {
         background-color: #ffffff !important;
         border: 1px solid #d8e2dc !important;
@@ -74,7 +76,7 @@ st.markdown("""
         font-size: 1.05em !important;
     }
 
-    /* --- SYNTHESIS CONTENT STYLES --- */
+    /* --- SYNTHESIS CONTENT & HIGHLIGHTING --- */
     .semantic-node-highlight {
         color: #2a9d8f;
         font-weight: bold;
@@ -103,6 +105,20 @@ st.markdown("""
         background-color: #f1faee;
     }
     
+    .google-icon {
+        font-size: 0.75em;
+        vertical-align: super;
+        margin-left: 2px;
+        color: #457b9d;
+        opacity: 0.8;
+    }
+
+    .stMarkdown {
+        line-height: 1.9;
+        font-size: 1.05em;
+    }
+
+    /* --- ARCHITECTURAL FOCUS BOXES --- */
     .metamodel-box {
         padding: 25px;
         border-radius: 15px;
@@ -131,26 +147,29 @@ st.markdown("""
     .date-badge {
         background-color: #1d3557;
         color: white;
-        padding: 8px 16px;
+        padding: 10px 18px;
         border-radius: 50px;
-        font-size: 0.9em;
-        font-weight: 600;
-        margin-bottom: 25px;
+        font-size: 0.95em;
+        font-weight: 700;
+        margin-bottom: 30px;
         display: block;
         text-align: center;
-        box-shadow: 0 4px 10px rgba(29, 53, 87, 0.2);
+        box-shadow: 0 4px 12px rgba(29, 53, 87, 0.25);
+        letter-spacing: 1px;
     }
 
     .sidebar-logo-container {
         display: flex;
         justify-content: center;
-        padding: 15px 0;
+        padding: 10px 0;
+        margin-bottom: 10px;
     }
 
     .stButton>button {
         width: 100%;
         border-radius: 10px;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
         transition: all 0.3s ease;
     }
 </style>
@@ -160,7 +179,7 @@ def get_svg_base64(svg_str):
     """Utility to encode SVG for display in the Streamlit sidebar."""
     return base64.b64encode(svg_str.encode('utf-8')).decode('utf-8')
 
-# --- LOGOTIP: 3D RELIEF (ORIGINAL RESTORED) ---
+# --- LOGOTIP: 3D RELIEF (ORIGINAL RESTORED: PYRAMID & TREE) ---
 SVG_3D_RELIEF = """
 <svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -193,7 +212,7 @@ SVG_3D_RELIEF = """
 # 1. CORE RENDERING ENGINES & DATA FETCHING
 # =============================================================================
 
-def render_cytoscape_network(elements, container_id="cy_synergy_full_final"):
+def render_cytoscape_network(elements, container_id="cy_synergy_full_pipeline"):
     """Interactive Cytoscape.js engine for high-density 18D graphs."""
     cyto_html = f"""
     <div style="position: relative; width: 100%;">
@@ -366,7 +385,7 @@ HUMAN_THINKING_METAMODEL = {
         },
         "Mission": {
             "color": "#92D050", "shape": "rectangle", 
-            "desc": "The high-level existential imperative driving the inquiry."
+            "desc": "The high-level existential imperative driving the direction of inquiry."
         },
         "Vision": {
             "color": "#FFFF00", "shape": "rectangle", 
@@ -516,7 +535,7 @@ MENTAL_APPROACHES_ONTOLOGY = {
         },
         "Openness and closedness": {
             "color": "#FFC000", "shape": "diamond", 
-            "desc": "Systemic state governing external data nodes."
+            "desc": "Systemic boundary state governing external data nodes."
         }
     }
 }
@@ -564,7 +583,7 @@ KNOWLEDGE_BASE = {
         "Philosophy": {"cat": "Humanities", "methods": ["Socratic Method", "Dialectics"], "tools": ["Logic Mapping"], "facets": ["Epistemology", "Ethics"]},
         "Linguistics": {"cat": "Humanities", "methods": ["Corpus Analysis", "Syntactic Parsing"], "tools": ["Praat", "NLTK"], "facets": ["Semantics", "Phonology"]},
         "Ecology": {"cat": "Natural", "methods": ["Remote Sensing", "Trophic Modeling"], "tools": ["GIS", "Biosensors"], "facets": ["Biodiversity", "Biogeochemistry"]},
-        "History": {"cat": "Humanities", "methods": ["Archival Research", "Prosopography"], "tools": ["Digital Archives"], "facets": ["Military History", "Diplomacy"]},
+        "History": {"cat": "Humanities", "methods": ["Archival Research", "Prosopography"], "tools": ["Radiocarbon Dating"], "facets": ["Military History", "Diplomacy"]},
         "Politics": {"cat": "Social", "methods": ["Policy Analysis", "Comparative Politics"], "tools": ["Polls", "Legislative DB"], "facets": ["Governance", "IR"]},
         "Forensic sciences": {"cat": "Applied", "methods": ["DNA Profiling", "Ballistics"], "tools": ["Luminol", "Mass Spec"], "facets": ["Digital Forensics", "Pathology"]},
         "Geology": {"cat": "Natural", "methods": ["Stratigraphy", "Mineralogy"], "tools": ["Seismograph", "GIS"], "facets": ["Tectonics", "Petrology"]},
@@ -581,12 +600,17 @@ if 'show_user_guide' not in st.session_state: st.session_state.show_user_guide =
 
 # --- EXPANDED LEFT SIDEBAR: LOGO & VISIBILITY FIXES ---
 with st.sidebar:
+    # Original 3D Relief Logo
     st.markdown(f'<div class="sidebar-logo-container"><img src="data:image/svg+xml;base64,{get_svg_base64(SVG_3D_RELIEF)}" width="220"></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="date-badge">SYSTEM DATE: {SYSTEM_DATE}</div>', unsafe_allow_html=True)
     
-    st.subheader("🔑 Dual-Engine API Access")
-    groq_api_key = st.text_input("Groq Key (Phase 1 Synthesis):", type="password", help="IMA structural foundation.")
-    cerebras_api_key = st.text_input("Cerebras Key (Phase 2 Ideas):", type="password", help="MA innovation mapping.")
+    # Hardcoded Date Badge
+    st.markdown(f'<div class="date-badge">FEBRUARY 24, 2026</div>', unsafe_allow_html=True)
+    
+    st.header("⚙️ SYSTEM CONTROL")
+    
+    st.subheader("🔑 Dual API Access")
+    groq_api_key = st.text_input("Groq Key (Phase 1 Synthesis):", type="password", help="Builds structural research foundation using IMA logic.")
+    cerebras_api_key = st.text_input("Cerebras Key (Phase 2 Ideas):", type="password", help="Generates innovations and mapping using MA logic.")
     
     st.divider()
     col_reset, col_guide = st.columns(2)
@@ -600,15 +624,15 @@ with st.sidebar:
             st.rerun()
             
     st.divider()
-    st.subheader("🌐 External Connectors")
+    st.subheader("🌐 EXTERNAL CONNECTORS")
     # RESTORED LINK BUTTONS
     st.link_button("📂 GitHub Repository", "https://github.com/", use_container_width=True)
     st.link_button("🆔 ORCID Registry", "https://orcid.org/", use_container_width=True)
     st.link_button("🎓 Google Scholar", "https://scholar.google.com/", use_container_width=True)
     
     st.divider()
-    st.subheader("📚 Knowledge Explorer")
-    # Forced High Contrast Labels
+    st.subheader("📚 KNOWLEDGE EXPLORER")
+    # Clean high-contrast expanders
     with st.expander("👤 User Profile Ontologies", expanded=False):
         for p, d in KNOWLEDGE_BASE["User profiles"].items(): st.markdown(f"**{p}**: {d['description']}")
     with st.expander("🧠 Mental Approach (MA) Map", expanded=False):
@@ -617,26 +641,27 @@ with st.sidebar:
         for n, d in HUMAN_THINKING_METAMODEL["nodes"].items(): st.markdown(f"• **{n}**: {d['desc']}")
     with st.expander("🔬 Science Taxonomy", expanded=False):
         for s in sorted(KNOWLEDGE_BASE["Science fields"].keys()): st.markdown(f"• **{s}**")
+    with st.expander("🏗️ Structural Model Context", expanded=False):
+        for m, d in KNOWLEDGE_BASE["Structural models"].items(): st.markdown(f"**{m}**: {d}")
 
 # --- MAIN PAGE CONTENT ---
 st.markdown('<h1 class="main-header-gradient">🧱 SIS Universal Knowledge Synthesizer</h1>', unsafe_allow_html=True)
-st.markdown(f"**Sequential Synergy Engine** | Architecture: 18D Meta-MA | Active Date: **{SYSTEM_DATE}**")
+st.markdown(f"**Advanced Sequential Synergy Pipeline** | Current Date: **{SYSTEM_DATE}**")
 
 if st.session_state.show_user_guide:
     st.info(f"""
-    **Synergy Pipeline Workflow:**
-    1. **Dual Engines**: provide both keys. Groq handles logical synthesis; Cerebras handles creative production.
-    2. **Phase 1 (Research)**: Groq performs an interdisciplinary synthesis foundation using IMA logic.
-    3. **Phase 2 (Innovation)**: Cerebras uses Groq's work to generate novel generative ideas using MA logic.
-    4. **Visualization**: The interactive graph maps facts (IMA) against produced innovations (MA).
+    **Sequential Synergy Pipeline Workflow:**
+    1. **Key Input**: Provide both Groq (Phase 1) and Cerebras (Phase 2) keys.
+    2. **Research Foundation (Step 1)**: Groq performs structural synthesis using IMA logic (Identity, Mission, Goal).
+    3. **Innovation Prompt (Step 2)**: Cerebras takes Groq's work and generates 'Useful Innovative Ideas' using MA logic (Dialectics, Core).
+    4. **Visualization**: The interactive graph maps structural facts against produced ideas.
     """)
 
-# REFERENCE BOXES
 col_ref1, col_ref2 = st.columns(2)
 with col_ref1:
     st.markdown("""<div class="metamodel-box"><b>🏛️ Phase 1: Groq (IMA Architecture)</b><br>Structural reasoning building the factual foundation. Focus: Identity, Mission, Problem.</div>""", unsafe_allow_html=True)
 with col_ref2:
-    st.markdown("""<div class="mental-approach-box"><b>🧠 Phase 2: Cerebras (MA Architecture)</b><br>Cognitive transformation producing innovative solutions. Focus: Dialectics, Perspective, Induction.</div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="mental-approach-box"><b>🧠 Phase 2: Cerebras (MA Architecture)</b><br>Cognitive transformation generating innovative solutions. Focus: Dialectics, Perspective, Induction.</div>""", unsafe_allow_html=True)
 
 st.markdown("### 🛠️ CONFIGURE SYNERGY PIPELINE")
 
@@ -658,11 +683,11 @@ col_inq1, col_inq2, col_inq3 = st.columns([2, 2, 1])
 with col_inq1: user_query = st.text_area("❓ STEP 1: Research Inquiry (for GROQ):", placeholder="Fact-based foundational inquiry...", height=200)
 with col_inq2: idea_query = st.text_area("💡 STEP 2: Innovation Prompt (for CEREBRAS):", placeholder="Innovation targets based on synthesis...", height=200)
 with col_inq3:
-    uploaded_file = st.file_uploader("📂 ATTACH DATA (.txt only):", type=['txt'])
+    uploaded_file = st.file_uploader("📂 ATTACH DATA (.txt only):", type=['txt'], help="Context for AI engines.")
     file_content = ""
     if uploaded_file: 
         file_content = uploaded_file.read().decode("utf-8")
-        st.success("File context successfully integrated.")
+        st.success("File integrated.")
 
 # =============================================================================
 # 5. SYNERGY EXECUTION ENGINE (GROQ -> CEREBRAS)
@@ -688,7 +713,6 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                 STRICT IMA ARCHITECTURE FOCUS: {json.dumps(HUMAN_THINKING_METAMODEL)}
                 DATA CONTEXT: Sciences: {sel_sciences}. Authors: {biblio}. Attachment: {file_content}
                 TASK: Provide a factual interdisciplinary dissertation foundation (approx 1500 words).
-                Focus on problem structure and taxonomic logic.
                 """
                 groq_resp = groq_client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
@@ -704,11 +728,10 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                 SESSION DATE: {SYSTEM_DATE}
                 STRICT MENTAL APPROACHES (MA) FOCUS: {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}
                 TASK: Use Groq's foundation to generate 'Useful Innovative Ideas' for: {idea_query}.
-                End with '### SEMANTIC_GRAPH_JSON' and JSON network (45-60 nodes).
-                VISUAL RULES: IMA nodes = rectangles; MA nodes = diamonds.
+                End with '### SEMANTIC_GRAPH_JSON' and JSON network (40-60 nodes).
                 Schema: {{"nodes": [{{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}}], "edges": [{{"source": "n1", "target": "n2", "rel_type": "AS|BT"}}]}}
                 """
-                cerebras_prompt = f"[RESEARCH FOUNDATION GENERATED BY GROQ]:\n{groq_synthesis}\n\n[USER INNOVATION REQUEST]:\n{idea_query}"
+                cerebras_prompt = f"GROQ FOUNDATION:\n{groq_synthesis}\n\nUSER TARGET:\n{idea_query}"
                 cerebras_resp = cerebras_client.chat.completions.create(
                     model="llama3.1-70b",
                     messages=[{"role": "system", "content": cerebras_sys}, {"role": "user", "content": cerebras_prompt}],
@@ -741,7 +764,9 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                     st.caption(f"Visual Mapping by Cerebras on {SYSTEM_DATE}.")
                     elements = []
                     for n in g_json.get("nodes", []):
-                        elements.append({"data": {"id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"), "size": 90, "shape": n.get("shape", "rectangle"), "z_index": 1}})
+                        level = n.get("type", "Branch")
+                        size = 110 if level == "Root" else 85
+                        elements.append({"data": {"id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"), "size": size, "shape": n.get("shape", "rectangle"), "z_index": 1}})
                     for e in g_json.get("edges", []):
                         elements.append({"data": {"source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")}})
                     render_cytoscape_network(elements, "viz_synergy_final_850")
@@ -757,8 +782,9 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
 # 6. FOOTER
 # =============================================================================
 st.divider()
-st.caption(f"SIS Universal Knowledge Synthesizer | v22.4 Sequential Synergy | Groq & Cerebras Sequential Pipeline | {SYSTEM_DATE}")
+st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_ID} | Operating Date: {SYSTEM_DATE}")
 st.write("")
+
 
 
 
