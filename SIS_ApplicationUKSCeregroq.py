@@ -646,6 +646,18 @@ KNOWLEDGE_BASE = {
             "tools": ["Seismograph", "GIS", "Magnetometers", "Thin-sectioning"], 
             "facets": ["Tectonics", "Petrology", "Paleontology", "Geophysics"]
         },
+        "Geography": {
+            "cat": "Natural/Social", 
+            "methods": ["Spatial Analysis", "Geospatial Modeling", "Remote Sensing", "Field Observation", "Regional Synthesis"], 
+            "tools": ["ArcGIS/QGIS", "GPS Systems", "Satellite Imagery", "Lidar Scan", "Cartographic Software"], 
+            "facets": ["Physical Geography", "Human Geography", "Geomorphology", "Urban Geography", "Biogeography"]
+        },
+        "Climatology": {
+            "cat": "Natural", 
+            "methods": ["Climate Modeling", "Paleoclimatic Reconstruction", "Statistical Time-Series Analysis", "Numerical Simulation", "Isotope Analysis"], 
+            "tools": ["Supercomputers (HPC)", "Weather Station Arrays", "Satellite Radiometers", "Ice Core Analysis", "Radiosondes"], 
+            "facets": ["Meteorology", "Paleoclimatology", "Dynamic Climatology", "Synoptic Climatology", "Applied Climatology"]
+        },
         "Library Science": {
             "cat": "Applied", 
             "methods": ["Taxonomy", "Archival Appraisal", "Retrieval Logic", "Metadata"], 
@@ -899,6 +911,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
