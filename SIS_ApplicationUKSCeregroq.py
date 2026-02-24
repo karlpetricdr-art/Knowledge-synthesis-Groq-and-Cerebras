@@ -27,14 +27,8 @@ st.set_page_config(
 # This section ensures the Knowledge Explorer is perfectly visible.
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
-    
-    html, body, [class*="st-"] {
-        font-family: 'Inter', sans-serif;
-    }
-
-    /* 1. OBLITERATE THE SIDEBAR ARTIFACTS */
-    /* This targets the specific Streamlit containers where "keyboard_double_arrow_right" appears */
+    /* 1. OBLITERATE ARROW ARTIFACTS & SIDEBAR ICONS */
+    /* Hides the specific Streamlit containers where "keyboard_double_arrow_right" appears as text */
     [data-testid="stSidebar"] [data-testid="stIcon"],
     [data-testid="stSidebar"] button[data-testid="stSidebarCollapseButton"],
     [data-testid="stSidebar"] .st-emotion-cache-16idsys,
@@ -893,6 +887,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
