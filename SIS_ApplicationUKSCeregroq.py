@@ -66,7 +66,7 @@ st.markdown("""
 
     /* 3. RE-STYLE EXPANDERS FOR PROFESSIONAL DENSITY */
     .stExpander {
-        background-color: #fffCCC !important;
+        background-color: #fffGGG !important;
         border: 1px solid #d8e2dc !important;
         border-radius: 12px !important;
         margin-bottom: 12px !important;
@@ -911,6 +911,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
