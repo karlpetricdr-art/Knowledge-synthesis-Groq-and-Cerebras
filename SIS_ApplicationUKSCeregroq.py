@@ -509,36 +509,7 @@ MENTAL_APPROACHES_ONTOLOGY = {
         }
     }
 }
-# =============================================================================
-# 2.1 HIERARCHOLOGY & HIERARCHOGRAPHY ONTOLOGY
-# =============================================================================
 
-HIERARCHOLOGY_ONTOLOGY = {
-    "core_definitions": {
-        "Hierarchology": "Interdisciplinary science studying hierarchical associative systems (Micro, Meso, Macro).",
-        "Hierarchography": "Descriptive outlining of systems using workflows, tree maps, and structural diagrams.",
-        "Scientific Cage": "Cognitive limitations preventing thought beyond established paradigms."
-    },
-    "hierarchical_levels": {
-        "Micro-hierarchology": "Internal individual thinking and neural inductive communication.",
-        "Meso-hierarchology": "Intermediate social groups and organizational associative structures.",
-        "Macro-hierarchology": "Fundamental social laws and universal natural hierarchies."
-    },
-    "operational_logic": {
-        "Internal Processes": "Inductive (building from specific neural/local signals to patterns).",
-        "External Functioning": "Deductive & Dialectical (applying general laws to specific social behaviors)."
-    },
-    "hierarchography_tools": [
-        "Workflow Mapping", "Tree Maps", "Oligographs", "UML Modeling", "Mind Mapping", "Cognitive Modeling"
-    ]
-}
-
-# Add Hierarchology-specific nodes to your existing Metamodel
-HUMAN_THINKING_METAMODEL["nodes"].update({
-    "Hierarchical Associative System": {"color": "#fd7e14", "shape": "ellipse", "desc": "The primary cognitive framework defined by hierarchology."},
-    "Scientific Cage": {"color": "#6c757d", "shape": "rectangle", "desc": "The boundary of human mental perspective."},
-    "Hierarchography": {"color": "#e63946", "shape": "diamond", "desc": "The visual description of hierarchical structures."}
-})
 # =============================================================================
 # 3. KNOWLEDGE BASE (EXHAUSTIVE 18D SCIENCE FIELDS & ONTOLOGIES)
 # =============================================================================
@@ -699,12 +670,6 @@ KNOWLEDGE_BASE = {
             "tools": ["Crime Mapping", "AFIS", "CODIS", "SPSS"], 
             "facets": ["Penology", "Forensic Psychology", "Police Science", "Criminal Justice"]
         },
-        "Forensic sciences": {
-            "cat": "Applied/Natural", 
-            "methods": ["DNA Profiling", "Ballistics", "Toxicology", "Trace Analysis", "Bloodstain Pattern Analysis", "Fingerprint Identification"], 
-            "tools": ["Mass Spectrometer", "Luminol", "Comparison Microscope", "AFIS (Automated Fingerprint Identification System)", "Gas Chromatography"], 
-            "facets": ["Forensic Biology", "Forensic Chemistry", "Forensic Pathology", "Digital Forensics", "Forensic Odontology"]
-        },
         "Legal science": {
             "cat": "Social", 
             "methods": ["Legal Hermeneutics", "Comparative Law", "Dogmatic Method", "Empirical Legal Research"], 
@@ -767,25 +732,6 @@ with st.sidebar:
         for n, d in HUMAN_THINKING_METAMODEL["nodes"].items(): st.markdown(f"• **{n}**: {d['desc']}")
     with st.expander("🌍 Scientific Paradigms", expanded=False):
         for p, d in KNOWLEDGE_BASE["Scientific paradigms"].items(): st.markdown(f"**{p}**: {d}")
-        # --- ADD THIS INSIDE THE SIDEBAR 'KNOWLEDGE EXPLORER' SECTION ---
-    with st.expander("📐 Hierarchology & Hierarchography", expanded=False):
-        st.markdown("**Core Concepts:**")
-        for key, val in HIERARCHOLOGY_ONTOLOGY["core_definitions"].items():
-            st.markdown(f"• **{key}**: {val}")
-        
-        st.markdown("---")
-        st.markdown("**Hierarchical Levels:**")
-        for level, desc in HIERARCHOLOGY_ONTOLOGY["hierarchical_levels"].items():
-            st.markdown(f"• **{level}**: {desc}")
-            
-        st.markdown("---")
-        st.markdown("**Logic Flows:**")
-        st.markdown(f"• *Internal:* {HIERARCHOLOGY_ONTOLOGY['operational_logic']['Internal Processes']}")
-        st.markdown(f"• *External:* {HIERARCHOLOGY_ONTOLOGY['operational_logic']['External Functioning']}")
-        
-        st.markdown("---")
-        st.markdown("**Hierarchography Methods:**")
-        st.write(", ".join(HIERARCHOLOGY_ONTOLOGY["hierarchography_tools"]))
     with st.expander("🔬 Science Taxonomy", expanded=False):
         for s in sorted(KNOWLEDGE_BASE["Science fields"].keys()): st.markdown(f"• **{s}**")
     with st.expander("🏗️ Structural Model Context", expanded=False):
@@ -840,45 +786,37 @@ with col_inq3:
         st.success(f"Context from {uploaded_file.name} integrated.")
 
 # =============================================================================
-# =============================================================================
-# 5. SYNERGY EXECUTION ENGINE (HIERARCHOLOGY -> HIERARCHOGRAPHY PIPELINE)
+# 5. SYNERGY EXECUTION ENGINE (GROQ -> CEREBRAS PIPELINE)
 # =============================================================================
 
 if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_container_width=True):
     if not groq_api_key or not cerebras_api_key:
         st.error("❌ Dual-Model synergy requires both Groq and Cerebras keys.")
     elif not user_query:
-        st.warning("⚠️ Phase 1 Research Inquiry is required.")
+        st.warning("⚠️ Phase 1 Research Inquiry is required to establish foundation.")
     else:
         try:
             # Init Clients
             groq_client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
             cerebras_client = OpenAI(api_key=cerebras_api_key, base_url="https://api.cerebras.ai/v1")
             
-            # Prepare data strings safely
-            h_ont_data = json.dumps(HIERARCHOLOGY_ONTOLOGY) if 'HIERARCHOLOGY_ONTOLOGY' in globals() else "{}"
-            ima_data = json.dumps(HUMAN_THINKING_METAMODEL)
-            ma_data = json.dumps(MENTAL_APPROACHES_ONTOLOGY)
-            biblio_data = fetch_author_bibliographies(target_authors) if target_authors else "No bibliography provided."
+            # Fetch Metadata
+            biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
 
-            # --- PHASE 1: GROQ (HIERARCHOLOGY ANALYSIS) ---
-            with st.spinner('PHASE 1: Groq synthesizing Hierarchology Foundation...'):
-                # Using standard strings and .replace() to avoid f-string SyntaxErrors
-                p1_template = """
-                You are the SIS Hierarchology Research Scientist (Phase 1).
-                HIERARCHOLOGY ONTOLOGY: [H_ONT]
-                IMA ARCHITECTURE: [IMA_ONT]
+            # --- PHASE 1: GROQ ---
+            with st.spinner('PHASE 1: Groq synthesizing structural foundation (IMA Logic)...'):
+                groq_sys_prompt = f"""
+                You are the SIS Research Synthesizer (Phase 1).
+                STRICT IMA ARCHITECTURE FOCUS: {json.dumps(HUMAN_THINKING_METAMODEL)}
                 
                 CONTEXT:
-                Date: [DATE] | Sciences: [SCIENCES]
-                Authors: [BIBLIO] | Data Context: [FILE]
+                Date: {SYSTEM_DATE}
+                Sciences: {sel_sciences}. Paradigms: {sel_paradigms}. Models: {sel_models}.
+                Authors: {biblio}. Data Context: {file_content}
                 
-                TASK: Provide a structural foundation (approx 1500 words) using Hierarchology:
-                1. THE SCIENTIFIC CAGE: Identify cognitive limitations restricting this research.
-                2. HIERARCHICAL LEVELS: Analyze via Micro-hierarchology (individual), Meso-hierarchology (groups), and Macro-hierarchology (societal laws).
-                3. OPERATIONAL LOGIC: Identify Internal Inductive vs External Deductive processes.
+                Task: Provide a factual, structural interdisciplinary foundation (approx 1500 words).
+                Do not generate innovations or graphs yet. Only the research base.
                 """
-                groq_sys_prompt = p1_template.replace("[H_ONT]", h_ont_data).replace("[IMA_ONT]", ima_data).replace("[DATE]", SYSTEM_DATE).replace("[SCIENCES]", str(sel_sciences)).replace("[BIBLIO]", biblio_data).replace("[FILE]", file_content)
                 
                 groq_response = groq_client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
@@ -887,43 +825,45 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                 )
                 groq_synthesis = groq_response.choices[0].message.content
 
-            # --- PHASE 2: CEREBRAS (HIERARCHOGRAPHY & INNOVATION) ---
-            with st.spinner('PHASE 2: Cerebras producing Hierarchography & Innovations...'):
-                p2_template = """
-                You are the SIS Hierarchography Specialist (Phase 2). 
-                MENTAL APPROACHES (MA): [MA_ONT]
+            # --- PHASE 2: CEREBRAS ---
+            with st.spinner('PHASE 2: Cerebras producing innovative ideas and semantic mapping (MA Logic)...'):
+                cerebras_sys_prompt = f"""
+                You are the SIS Innovation Engine (Phase 2). 
+                STRICT MENTAL APPROACHES (MA) FOCUS: {json.dumps(MENTAL_APPROACHES_ONTOLOGY)}
                 
                 TASK:
-                1. Review the Phase 1 analysis and generate radical 'Useful Innovative Ideas'.
-                2. HIERARCHOGRAPHY: Describe the system using diagrammatic logic (Workflows, Oligographs, or Tree Maps).
-                3. End your response with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network.
+                1. Review the RESEARCH FOUNDATION generated by your partner (Groq).
+                2. Apply MA logic (Dialectics, Perspective Shifting, Core) to generate radical 'Useful Innovative Ideas'.
+                3. End your response with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network (45-65 nodes).
                 
-                VISUAL RULES: 
-                - Hierarchies = 'rectangle' (#fd7e14).
-                - Associations = 'diamond' (#e63946).
-                - JSON schema: {"nodes": [{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}], "edges": [{"source": "n1", "target": "n2", "rel_type": "AS|BT"}]}
+                Visual Rules: 
+                - IMA nodes (rectangles) for structural/factual concepts.
+                - MA nodes (diamonds) for cognitive filters and generative steps.
+                - Use colors provided in the ontology dictionaries.
+                
+                JSON schema: {{"nodes": [{{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}}], "edges": [{{"source": "n1", "target": "n2", "rel_type": "AS|BT|outcome_of"}}]}}
                 """
-                cerebras_sys_prompt = p2_template.replace("[MA_ONT]", ma_data)
-                cerebras_user_input = "FOUNDATION: " + groq_synthesis + "\n\nGOAL: " + idea_query
                 
+                cerebras_prompt = f"GROQ RESEARCH FOUNDATION (FOUNDATION):\n{groq_synthesis}\n\nUSER INNOVATION REQUEST (GOAL):\n{idea_query}"
+                
+                # USING DYNAMIC MODEL ENDPOINT
                 cerebras_response = cerebras_client.chat.completions.create(
                     model=cerebras_id, 
-                    messages=[{"role": "system", "content": cerebras_sys_prompt}, {"role": "user", "content": cerebras_user_input}],
+                    messages=[{"role": "system", "content": cerebras_sys_prompt}, {"role": "user", "content": cerebras_prompt}],
                     temperature=0.85
                 )
                 cerebras_innovation = cerebras_response.choices[0].message.content
 
             # --- COMBINING AND RENDERING ---
-            combined_content = "## 📚 Phase 1: Hierarchology Foundation\n" + groq_synthesis + "\n\n---\n## 💡 Phase 2: Hierarchography & Innovations\n" + cerebras_innovation
+            combined_content = f"## 📚 Phase 1: Research Foundation (Groq)\n{groq_synthesis}\n\n---\n## 💡 Phase 2: Useful Innovative Ideas (Cerebras)\n{cerebras_innovation}"
             
             parts = combined_content.split("### SEMANTIC_GRAPH_JSON")
             main_markdown = parts[0]
             
-            # Semantic Processing (Google Links)
+            # Semantic Processing (Google Links + Anchor linking)
             if len(parts) > 1:
                 try:
-                    json_str = re.search(r'\{.*\}', parts[1], re.DOTALL).group()
-                    g_json = json.loads(json_str)
+                    g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
                     for n in g_json.get("nodes", []):
                         lbl, nid = n["label"], n["id"]
                         g_url = urllib.parse.quote(lbl)
@@ -932,52 +872,47 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
                         main_markdown = pattern.sub(replacement, main_markdown, count=1)
                 except: pass
 
-            st.subheader("📊 INTEGRATED HIERARCHOLOGY RESULTS")
+            st.subheader("📊 INTEGRATED PIPELINE RESULTS")
             st.markdown(main_markdown, unsafe_allow_html=True)
 
-            # --- INTERACTIVE GRAPH (CLEAN LIST BUILDING) ---
+            # Interactive Graph Visualization
             if len(parts) > 1:
                 try:
-                    json_str = re.search(r'\{.*\}', parts[1], re.DOTALL).group()
-                    g_json = json.loads(json_str)
-                    st.subheader("🕸️ HIERARCHOGRAPHIC SEMANTIC NETWORK")
+                    g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
+                    st.subheader("🕸️ INTEGRATED SEQUENTIAL SEMANTIC NETWORK")
+                    st.caption(f"Visual Mapping by Cerebras on {SYSTEM_DATE} based on Groq Research synthesis.")
                     
                     elements = []
                     for n in g_json.get("nodes", []):
-                        elements.append({
-                            "data": {
-                                "id": n["id"], 
-                                "label": n["label"], 
-                                "color": n.get("color", "#fd7e14"), 
-                                "size": 100, 
-                                "shape": n.get("shape", "rectangle")
-                            }
-                        })
+                        level = n.get("type", "Branch")
+                        size = 110 if level == "Root" else 90
+                        elements.append({"data": {
+                            "id": n["id"], "label": n["label"], "color": n.get("color", "#2a9d8f"),
+                            "size": size, "shape": n.get("shape", "rectangle"), "z_index": 1
+                        }})
                     for e in g_json.get("edges", []):
-                        elements.append({
-                            "data": {
-                                "source": e["source"], 
-                                "target": e["target"], 
-                                "rel_type": e.get("rel_type", "AS")
-                            }
-                        })
-                    
-                    render_cytoscape_network(elements, "viz_hierarchography_final")
-                except Exception as viz_err:
-                    st.warning(f"⚠️ Graph Render Error: {viz_err}")
+                        elements.append({"data": {
+                            "source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")
+                        }})
+                    render_cytoscape_network(elements, "viz_synergy_final_950")
+                except: st.warning("⚠️ Error: Semantic Graph JSON could not be rendered.")
 
-            if biblio_data:
-                with st.expander("📚 BIBLIOGRAPHY"):
-                    st.text(biblio_data)
+            if biblio:
+                with st.expander("📚 EXTENDED BIBLIOGRAPHIC METADATA"):
+                    st.text(biblio)
 
         except Exception as e:
-            st.error(f"❌ Pipeline Failure: {e}")
+            st.error(f"❌ Sequential Synergy Failure: {e}")
 
 # =============================================================================
-# 6. FOOTER
+# 6. FOOTER & METRICS
 # =============================================================================
 st.divider()
-st.caption(f"SIS Hierarchology Synthesizer | {VERSION_CODE} | {SYSTEM_DATE}")
+st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
+st.write("")
+st.write("")
+
+
 
 
 
