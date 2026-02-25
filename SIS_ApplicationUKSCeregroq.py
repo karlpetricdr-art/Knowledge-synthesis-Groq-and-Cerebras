@@ -10,10 +10,13 @@ from openai import OpenAI
 import streamlit.components.v1 as components
 
 # =============================================================================
-# 0. GLOBAL CONFIGURATION & SESSION DATE (FEBRUARY 24, 2026)
+# 0. GLOBAL CONFIGURATION & AUTOMATED DATE
 # =============================================================================
-SYSTEM_DATE = "February 24, 2026"
-VERSION_CODE = "v22.8.0-ULTRA-SYNERGY-FINAL-950"
+# Knjižnica datetime je verjetno že uvožena na vrhu, če ni, dodajte: from datetime import datetime
+
+# Avtomatsko pridobi trenutni datum v formatu: Month Day, Year (npr. February 25, 2026)
+SYSTEM_DATE = datetime.now().strftime("%B %d, %Y")
+VERSION_CODE = "v22.8.2-AUTO-DATE-BETA"
 
 st.set_page_config(
     page_title=f"SIS Universal Knowledge Synthesizer - {SYSTEM_DATE}",
@@ -917,6 +920,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
