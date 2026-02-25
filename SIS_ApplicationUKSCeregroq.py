@@ -699,11 +699,6 @@ with st.sidebar:
     # 1. Original 3D Relief Logo
     st.markdown(f'<div class="sidebar-logo-container"><img src="data:image/svg+xml;base64,{get_svg_base64(SVG_3D_RELIEF)}" width="220"></div>', unsafe_allow_html=True)
     
-    # 2. # --- EXPANDED LEFT SIDEBAR: LOGO, ARROW FIXES, & FORCED CONTRAST ---
-with st.sidebar:
-    # 1. Logotip (že obstaja)
-    st.markdown(f'<div class="sidebar-logo-container"><img src="data:image/svg+xml;base64,{get_svg_base64(SVG_3D_RELIEF)}" width="220"></div>', unsafe_allow_html=True)
-    
     # 2. TO KODO VSTAVITE TUKAJ (Prikaz avtomatskega datuma):
     st.markdown(f'<div class="date-badge">{SYSTEM_DATE.upper()}</div>', unsafe_allow_html=True)
     
@@ -929,6 +924,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
