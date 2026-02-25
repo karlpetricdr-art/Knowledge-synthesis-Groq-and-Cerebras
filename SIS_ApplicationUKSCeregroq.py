@@ -855,33 +855,30 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
             groq_client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
             cerebras_client = OpenAI(api_key=cerebras_api_key, base_url="https://api.cerebras.ai/v1")
             
-            # 1. Prepare data outside of f-strings to prevent SyntaxErrors
-            # We check if HIERARCHOLOGY_ONTOLOGY exists; if not, we use an empty dict.
-            if 'HIERARCHOLOGY_ONTOLOGY' in locals():
-                h_ont_str = json.dumps(HIERARCHOLOGY_ONTOLOGY)
-            else:
-                h_ont_str = "{}"
-                
-            ima_ont_str = json.dumps(HUMAN_THINKING_METAMODEL)
-            ma_ont_str = json.dumps(MENTAL_APPROACHES_ONTOLOGY)
-            biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
+            # Prepare data strings safely
+            h_ont_data = json.dumps(HIERARCHOLOGY_ONTOLOGY) if 'HIERARCHOLOGY_ONTOLOGY' in locals() else "{}"
+            ima_data = json.dumps(HUMAN_THINKING_METAMODEL)
+            ma_data = json.dumps(MENTAL_APPROACHES_ONTOLOGY)
+            biblio_data = fetch_author_bibliographies(target_authors) if target_authors else "No bibliography provided."
 
             # --- PHASE 1: GROQ (HIERARCHOLOGY ANALYSIS) ---
             with st.spinner('PHASE 1: Groq synthesizing Hierarchology Foundation...'):
-                groq_sys_prompt = f"""
+                # Using standard strings and .replace() to avoid f-string SyntaxErrors
+                p1_template = """
                 You are the SIS Hierarchology Research Scientist (Phase 1).
-                HIERARCHOLOGY ONTOLOGY: {h_ont_str}
-                IMA ARCHITECTURE: {ima_ont_str}
+                HIERARCHOLOGY ONTOLOGY: [H_ONT]
+                IMA ARCHITECTURE: [IMA_ONT]
                 
                 CONTEXT:
-                Date: {SYSTEM_DATE} | Sciences: {sel_sciences}
-                Authors: {biblio} | Data Context: {file_content}
+                Date: [DATE] | Sciences: [SCIENCES]
+                Authors: [BIBLIO] | Data Context: [FILE]
                 
-                TASK: Provide a structural foundation using Hierarchology:
-                1. THE SCIENTIFIC CAGE: Identify the cognitive limitations restricting this research.
-                2. HIERARCHICAL LEVELS: Analyze via Micro, Meso, and Macro-hierarchology.
+                TASK: Provide a structural foundation (approx 1500 words) using Hierarchology:
+                1. THE SCIENTIFIC CAGE: Identify cognitive limitations restricting this research.
+                2. HIERARCHICAL LEVELS: Analyze via Micro-hierarchology (individual), Meso-hierarchology (groups), and Macro-hierarchology (societal laws).
                 3. OPERATIONAL LOGIC: Identify Internal Inductive vs External Deductive processes.
                 """
+                groq_sys_prompt = p1_template.replace("[H_ONT]", h_ont_data).replace("[IMA_ONT]", ima_data).replace("[DATE]", SYSTEM_DATE).replace("[SCIENCES]", str(sel_sciences)).replace("[BIBLIO]", biblio_data).replace("[FILE]", file_content)
                 
                 groq_response = groq_client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
@@ -892,71 +889,95 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
 
             # --- PHASE 2: CEREBRAS (HIERARCHOGRAPHY & INNOVATION) ---
             with st.spinner('PHASE 2: Cerebras producing Hierarchography & Innovations...'):
-                cerebras_sys_prompt = f"""
+                p2_template = """
                 You are the SIS Hierarchography Specialist (Phase 2). 
-                MENTAL APPROACHES (MA): {ma_ont_str}
+                MENTAL APPROACHES (MA): [MA_ONT]
                 
                 TASK:
-                1. Review Phase 1 analysis and generate radical 'Useful Innovative Ideas'.
-                2. HIERARCHOGRAPHY: Describe the system using diagrammatic logic (Workflows/Oligographs).
+                1. Review the Phase 1 analysis and generate radical 'Useful Innovative Ideas'.
+                2. HIERARCHOGRAPHY: Describe the system using diagrammatic logic (Workflows, Oligographs, or Tree Maps).
                 3. End your response with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network.
                 
                 VISUAL RULES: 
                 - Hierarchies = 'rectangle' (#fd7e14).
                 - Associations = 'diamond' (#e63946).
+                - JSON schema: {"nodes": [{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}], "edges": [{"source": "n1", "target": "n2", "rel_type": "AS|BT"}]}
                 """
-                
-                cerebras_prompt = f"FOUNDATION: {groq_synthesis}\n\nGOAL: {idea_query}"
+                cerebras_sys_prompt = p2_template.replace("[MA_ONT]", ma_data)
+                cerebras_user_input = "FOUNDATION: " + groq_synthesis + "\n\nGOAL: " + idea_query
                 
                 cerebras_response = cerebras_client.chat.completions.create(
                     model=cerebras_id, 
-                    messages=[{"role": "system", "content": cerebras_sys_prompt}, {"role": "user", "content": cerebras_prompt}],
+                    messages=[{"role": "system", "content": cerebras_sys_prompt}, {"role": "user", "content": cerebras_user_input}],
                     temperature=0.85
                 )
                 cerebras_innovation = cerebras_response.choices[0].message.content
 
             # --- COMBINING AND RENDERING ---
-            combined_content = f"## 📚 Phase 1: Hierarchology Foundation\n{groq_synthesis}\n\n---\n## 💡 Phase 2: Hierarchography & Innovations\n{cerebras_innovation}"
+            combined_content = "## 📚 Phase 1: Hierarchology Foundation\n" + groq_synthesis + "\n\n---\n## 💡 Phase 2: Hierarchography & Innovations\n" + cerebras_innovation
             
             parts = combined_content.split("### SEMANTIC_GRAPH_JSON")
             main_markdown = parts[0]
             
-            # Semantic Processing (Linking labels to Google Search)
+            # Semantic Processing (Google Links)
             if len(parts) > 1:
                 try:
-                    g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
+                    json_str = re.search(r'\{.*\}', parts[1], re.DOTALL).group()
+                    g_json = json.loads(json_str)
                     for n in g_json.get("nodes", []):
-                        lbl = n["label"]
-                        nid = n["id"]
+                        lbl, nid = n["label"], n["id"]
                         g_url = urllib.parse.quote(lbl)
                         pattern = re.compile(re.escape(lbl), re.IGNORECASE)
                         replacement = f'<span id="{nid}"><a href="https://www.google.com/search?q={g_url}" target="_blank" class="semantic-node-highlight">{lbl}<i class="google-icon">↗</i></a></span>'
                         main_markdown = pattern.sub(replacement, main_markdown, count=1)
-                except:
-                    pass
+                except: pass
 
             st.subheader("📊 INTEGRATED HIERARCHOLOGY RESULTS")
             st.markdown(main_markdown, unsafe_allow_html=True)
 
-            # --- INTERACTIVE GRAPH (FIXED SYNTAX) ---
+            # --- INTERACTIVE GRAPH (CLEAN LIST BUILDING) ---
             if len(parts) > 1:
                 try:
-                    g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
+                    json_str = re.search(r'\{.*\}', parts[1], re.DOTALL).group()
+                    g_json = json.loads(json_str)
                     st.subheader("🕸️ HIERARCHOGRAPHIC SEMANTIC NETWORK")
                     
                     elements = []
-                    # Building nodes using standard single-brace dictionary logic
                     for n in g_json.get("nodes", []):
                         elements.append({
                             "data": {
-                                "id": n["id"],
+                                "id": n["id"], 
+                                "label": n["label"], 
+                                "color": n.get("color", "#fd7e14"), 
+                                "size": 100, 
+                                "shape": n.get("shape", "rectangle")
+                            }
+                        })
+                    for e in g_json.get("edges", []):
+                        elements.append({
+                            "data": {
+                                "source": e["source"], 
+                                "target": e["target"], 
+                                "rel_type": e.get("rel_type", "AS")
+                            }
+                        })
+                    
+                    render_cytoscape_network(elements, "viz_hierarchography_final")
+                except Exception as viz_err:
+                    st.warning(f"⚠️ Graph Render Error: {viz_err}")
+
+            if biblio_data:
+                with st.expander("📚 BIBLIOGRAPHY"):
+                    st.text(biblio_data)
+
+        except Exception as e:
+            st.error(f"❌ Pipeline Failure: {e}")
+
 # =============================================================================
-# 6. FOOTER & METRICS
+# 6. FOOTER
 # =============================================================================
 st.divider()
-st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
-st.write("")
-st.write("")
+st.caption(f"SIS Hierarchology Synthesizer | {VERSION_CODE} | {SYSTEM_DATE}")
 
 
 
