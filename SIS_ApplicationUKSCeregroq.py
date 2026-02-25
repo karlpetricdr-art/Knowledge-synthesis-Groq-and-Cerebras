@@ -855,18 +855,23 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
             groq_client = OpenAI(api_key=groq_api_key, base_url="https://api.groq.com/openai/v1")
             cerebras_client = OpenAI(api_key=cerebras_api_key, base_url="https://api.cerebras.ai/v1")
             
-            # Prepare ontology data for the prompts (Solves the SyntaxError)
-            h_ont = json.dumps(HIERARCHOLOGY_ONTOLOGY) if 'HIERARCHOLOGY_ONTOLOGY' in locals() else "{}"
-            ima_ont = json.dumps(HUMAN_THINKING_METAMODEL)
-            ma_ont = json.dumps(MENTAL_APPROACHES_ONTOLOGY)
+            # 1. Prepare data outside of f-strings to prevent SyntaxErrors
+            # We check if HIERARCHOLOGY_ONTOLOGY exists; if not, we use an empty dict.
+            if 'HIERARCHOLOGY_ONTOLOGY' in locals():
+                h_ont_str = json.dumps(HIERARCHOLOGY_ONTOLOGY)
+            else:
+                h_ont_str = "{}"
+                
+            ima_ont_str = json.dumps(HUMAN_THINKING_METAMODEL)
+            ma_ont_str = json.dumps(MENTAL_APPROACHES_ONTOLOGY)
             biblio = fetch_author_bibliographies(target_authors) if target_authors else ""
 
             # --- PHASE 1: GROQ (HIERARCHOLOGY ANALYSIS) ---
             with st.spinner('PHASE 1: Groq synthesizing Hierarchology Foundation...'):
                 groq_sys_prompt = f"""
                 You are the SIS Hierarchology Research Scientist (Phase 1).
-                HIERARCHOLOGY ONTOLOGY: {h_ont}
-                IMA ARCHITECTURE: {ima_ont}
+                HIERARCHOLOGY ONTOLOGY: {h_ont_str}
+                IMA ARCHITECTURE: {ima_ont_str}
                 
                 CONTEXT:
                 Date: {SYSTEM_DATE} | Sciences: {sel_sciences}
@@ -889,17 +894,16 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
             with st.spinner('PHASE 2: Cerebras producing Hierarchography & Innovations...'):
                 cerebras_sys_prompt = f"""
                 You are the SIS Hierarchography Specialist (Phase 2). 
-                MENTAL APPROACHES (MA): {ma_ont}
+                MENTAL APPROACHES (MA): {ma_ont_str}
                 
                 TASK:
                 1. Review Phase 1 analysis and generate radical 'Useful Innovative Ideas'.
                 2. HIERARCHOGRAPHY: Describe the system using diagrammatic logic (Workflows/Oligographs).
-                3. End with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network.
+                3. End your response with '### SEMANTIC_GRAPH_JSON' followed by a valid JSON network.
                 
                 VISUAL RULES: 
                 - Hierarchies = 'rectangle' (#fd7e14).
                 - Associations = 'diamond' (#e63946).
-                - JSON schema: {{"nodes": [{{"id": "n1", "label": "Text", "type": "Root|Branch", "color": "#hex", "shape": "rectangle|diamond"}}], "edges": [{{"source": "n1", "target": "n2", "rel_type": "AS|BT"}}]}}
                 """
                 
                 cerebras_prompt = f"FOUNDATION: {groq_synthesis}\n\nGOAL: {idea_query}"
@@ -917,43 +921,35 @@ if st.button("🚀 EXECUTE MULTI-DIMENSIONAL SEQUENTIAL SYNERGY PIPELINE", use_c
             parts = combined_content.split("### SEMANTIC_GRAPH_JSON")
             main_markdown = parts[0]
             
-            # Semantic Processing (Google Links)
+            # Semantic Processing (Linking labels to Google Search)
             if len(parts) > 1:
                 try:
                     g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
                     for n in g_json.get("nodes", []):
-                        lbl, nid = n["label"], n["id"]
+                        lbl = n["label"]
+                        nid = n["id"]
                         g_url = urllib.parse.quote(lbl)
                         pattern = re.compile(re.escape(lbl), re.IGNORECASE)
                         replacement = f'<span id="{nid}"><a href="https://www.google.com/search?q={g_url}" target="_blank" class="semantic-node-highlight">{lbl}<i class="google-icon">↗</i></a></span>'
                         main_markdown = pattern.sub(replacement, main_markdown, count=1)
-                except: pass
+                except:
+                    pass
 
             st.subheader("📊 INTEGRATED HIERARCHOLOGY RESULTS")
             st.markdown(main_markdown, unsafe_allow_html=True)
 
-            # Interactive Graph Visualization
+            # --- INTERACTIVE GRAPH (FIXED SYNTAX) ---
             if len(parts) > 1:
                 try:
                     g_json = json.loads(re.search(r'\{.*\}', parts[1], re.DOTALL).group())
                     st.subheader("🕸️ HIERARCHOGRAPHIC SEMANTIC NETWORK")
                     
                     elements = []
+                    # Building nodes using standard single-brace dictionary logic
                     for n in g_json.get("nodes", []):
-                        elements.append({{"data": {{"id": n["id"], "label": n["label"], "color": n.get("color", "#fd7e14"), "size": 100, "shape": n.get("shape", "rectangle"), "z_index": 1}}}})
-                    for e in g_json.get("edges", []):
-                        elements.append({{"data": {{"source": e["source"], "target": e["target"], "rel_type": e.get("rel_type", "AS")}}}})
-                    
-                    render_cytoscape_network(elements, "viz_hierarchography_950")
-                except Exception as viz_err:
-                    st.warning(f"⚠️ Graph Render Error: {viz_err}")
-
-            if biblio:
-                with st.expander("📚 BIBLIOGRAPHY"):
-                    st.text(biblio)
-
-        except Exception as e:
-            st.error(f"❌ Pipeline Failure: {e}")
+                        elements.append({
+                            "data": {
+                                "id": n["id"],
 # =============================================================================
 # 6. FOOTER & METRICS
 # =============================================================================
@@ -961,6 +957,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
