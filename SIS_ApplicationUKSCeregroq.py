@@ -694,14 +694,15 @@ KNOWLEDGE_BASE = {
 
 if 'show_user_guide' not in st.session_state: st.session_state.show_user_guide = False
 
-# --- EXPANDED LEFT SIDEBAR: LOGO, ARROW FIXES, & FORCED CONTRAST ---
+# --- EXPANDED LEFT SIDEBAR: LOGO & SYSTEM INFO ---
 with st.sidebar:
-    # 1. Logotip
+    # 1. Logo
     st.markdown(f'<div class="sidebar-logo-container"><img src="data:image/svg+xml;base64,{get_svg_base64(SVG_3D_RELIEF)}" width="220"></div>', unsafe_allow_html=True)
     
-    # 2. TO KODO VSTAVITE TUKAJ (Prikaz avtomatskega datuma):
+    # 2. Automated System Date Badge
     st.markdown(f'<div class="date-badge">{SYSTEM_DATE.upper()}</div>', unsafe_allow_html=True)
     
+    # 3. Controls
     st.header("⚙️ SYSTEM CONTROL")
     
     # Dual API Keys Access
@@ -920,6 +921,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
