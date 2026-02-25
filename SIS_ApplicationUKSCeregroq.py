@@ -702,14 +702,6 @@ with st.sidebar:
     # 2. TO KODO VSTAVITE TUKAJ (Prikaz avtomatskega datuma):
     st.markdown(f'<div class="date-badge">{SYSTEM_DATE.upper()}</div>', unsafe_allow_html=True)
     
-    # 3. Sledi ostalo (System Control, API ključi...)
-    st.header("⚙️ SYSTEM CONTROL")
-    # ... naprej ostala vaša koda
-    
-    # 3. Sledi ostalo (System Control, API ključi...)
-    st.header("⚙️ SYSTEM CONTROL")
-    # ... naprej ostala vaša koda
-    
     st.header("⚙️ SYSTEM CONTROL")
     
     # Dual API Keys Access
@@ -928,6 +920,7 @@ st.divider()
 st.caption(f"SIS Universal Knowledge Synthesizer | {VERSION_CODE} | Operating Date: {SYSTEM_DATE}")
 st.write("")
 st.write("")
+
 
 
 
